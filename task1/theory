@@ -1,0 +1,65 @@
+Übung 01
+Aufgabe 1
+Was heißt "general-purpose Computer"?
+Ein “general-purpose Computer” ist nicht für die Lösung eines spezifischen Problems gedacht, sondern allgemein für die Lösung von Problemen. Welches Problem der Computer letztendlich lösen kann ist von den Programmen auf dem Rechner bzw. von der Programmierung abhängig.
+
+Was heißt "Programme sind auch nur Daten"?
+Das von-Neumann-Rechnermodell kennt nur einen Speicher. Das Programm, das aus den Instruktionen/Befehlen besteht, wird im selben Speicher abgelegt wie die Daten, mit denen gerechnet wird. Somit können Code und Daten nicht unterschieden werden. Was am Ende ein Befehl ist und was Daten, mit denen man rechnet, hängt von der Interpretation ab. Dies kann allerdings zu Problemen führen, da die Daten als Befehle interpretiert werden können und anders herum.
+Probleme damit:
+- Daten können als Befehle interpretiert werden.
+- Programme können sich selbst verändern (nützlich für Viren)
+
+Was sind die 4 Hauptbestandteile des von-Neumann-Rechnermodells?
+CPU (Enthält Control Unit, Arithmetic Logical Unit bzw. Operating Unit), Memory, Peripherie (Input/Output Unit), Verbindung (Bus?)
+- CPU führt Befehle aus.
+- Memory speichert die Daten und Programm-Befehle als eine Sequenz von bits.
+- I/O gibt ein Interface für Input (via. Maus, Tastatur, Mikrofon) und Output (Monitor, Lautsprecher)
+- Bus verbindet alle Komponenten (So kann die CPU etwa auf den Speicher und die I/O zugreifen)
+
+Was machen der Datenprozessor und Befehlsprozessor in der CPU?
+// TODO
+
+Warum sind Daten- und Adressbus getrennt?
+Damit man zur selben Zeit an unterschiedlichen Positionen auf sie zugreifen kann. Wären die beiden Busse kombiniert, dann wären die Zugriffe sehr viel langsamer. Siehe auch "von-Neumann Flaschenhals".
+
+Was bedeutet SISD? Was für andere Kategorien gibt es nach Flynn?
+- SISD steht für "Single Instruction Single Data". Die CPU kann zur selben Zeit nur einen Befehl ausführen und jeder Befehl kann nur einen Operanden bearbeiten.
+- SIMD ("Single Instruction Multiple Data"): Mehrere CPUs können Instruktionen sequenziell oder parallel ausführen und mehrere Datenströme bearbeitet.
+- MISD ("Multiple Instruction streams, single data stream"): Mehrere PUs führen gleichzeitig mehrere Instruktionen auf dem selben Datenstrom aus.
+- MIMD ("Multiple instruction streams, multiple data streams"): Mehrere PUs führen asynchron Befehle auf mehreren Datenströmen aus. Die Daten können von mehreren Prozessen gleichzeitig beabeitet werden oder auch nicht. Daten können auch auf unterschiedlichen Computern liegen, die bspw. über einen zentralen Server gesteuert werden. So können sehr viele komplexe Bereichnungen unabhängig durchgeführt und die Ergebnisse dann verbunden werden.
+
+Was unterscheided Machinencode, Assemblersprachen sowie Ein- und Mehr-Adress-Befehle?
+// TODO
+
+Was ist das Zwei-Phasen-Konzept der Befehlsverarbeitung und welches Problem wird damit auf welche Weise gelöst?
+- Es gibt 2 Phasen, die pro Befehl während der Ausführung eines Programms durchlaufen werden: Interpretations-Phase und Exekutions-Phase.
+- Interpretation: Der sogenannte Program-Counter (Auch PC oder Instruction Pointer genannt) zeigt, welcher Befehl gerade ausgeführt werden soll und wie groß die Operanden sind. Je nachdem wird der Program-Counter nach der Exekution soweit inkrementiert, dass er auf den nächsten Befehl und nicht auf irgendwelche Daten zeigt.
+- Exekution: Die Daten, die für die Ausführung des Befehls benötigt werden, werden ausgelesen und bearbeitet. Danach werden sie an die Position geschrieben, die der Befehl angibt.
+- Der Program-Counter SOLLTE immer auf einen Befehl zeigen. Damit SOLLTE auch immer ein Befehl ausgeführt werden anstatt dass arbiträre Daten als Befehl interpretiert werden. "SOLLTE" weil theoretisch auch der PC verschoben und so das Programm durcheinander bringen könnte. ("JMP 0xWHATEVER" oder "JMP EAX")
+
+Was ist der "Flaschenhals" des von-Neumann-Rechnermodells? Wie versuchte man es später zu lösen?
+- Wenn der Zugriff auf den Speicher und/oder die Busse langsamer ist als die CPU, dann kann die CPU nicht ihre volle Geschwindigkeit nutzen, da Befehle nur sequenziell abgearbeitet werden können.
+
+
+
+
+
+Teil 2:
+
+Was machen ADD, SUB, MUL, DIV, IDIV, IMUL und NEG in Nasm und warum gibt es je 2 Befehle für Multiplikation und Division?
+    IMUL Multiplikation von ganzen Zahlen mit Vorzeichen. Bei der Multiplikation von 32-Bit Integern ist das Ergebnis eine 64-Bit Zahl.
+    MUL Multiplikation von ganzen Zahlen ohne Vorzeichen. Bei der Multiplikation von 32-Bit Zahlen ist das Ergebnis eine 64-Bit Zahl. 
+    IDIV Division von ganzen Zahlen mit Vorzeichen.
+    DIV Division von ganzen Zahlen ohne Vorzeichen.
+
+Wo stehen die übergebenen Parameter in einer Funktion? // TODO
+
+In C (n ist uint64_t): (n*(n+1)) / 2
+; Pseudocode
+SUB eax eax    ; Zero the eax gegister
+ADD eax n_reg  ; Copy n into eax
+ADD n_reg 1    ; Add 1 to n
+IMUL eax n_reg ; Multiply n and n+1
+IDIV eax 2     ; Divide by 2
+
+
