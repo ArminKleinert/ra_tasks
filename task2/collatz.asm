@@ -7,7 +7,7 @@ collatz:
 
 coz_loop_start:
         cmp rdi, 1
-        jg coz_loop_end
+        jl coz_loop_end
 
         ; Check if rdi is even using rbx as intermediate register
         mov rbx, rdi
@@ -15,10 +15,14 @@ coz_loop_start:
         jnz coz_if_mid
 
         ; rdi /= 2
-        mov rax, rdi
-        mov rdi, 2
-        div rdi
-        mov rdi, rax
+        ;mov rax, rdi
+        ;mov rbx, 2
+        ;xor rdi, rdi
+        ;div rbx
+        ;mov rdi, rax
+        
+        shr rdi, 1
+        jmp coz_if_end
 coz_if_mid:
         ; rdi *= 3
         mov rax, rdi
@@ -31,6 +35,8 @@ coz_if_mid:
 coz_if_end:
         inc rcx              ; rcx ++
 
+        jmp coz_loop_start
+        
 coz_loop_end:
         mov rax, rcx
         ret
