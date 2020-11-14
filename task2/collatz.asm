@@ -16,7 +16,7 @@ coz_loop_start:
         ; is_even(n)
         mov rcx, rax
         and rcx, 1
-        jnz coz_if_else
+        jnz coz_if_else ; Not even -> Jump to else
 
         ; n /= 2
         mov rcx, 2
@@ -43,8 +43,8 @@ coz_if_end:
         jmp coz_loop_start
         
 coz_loop_end:
-        mov rax, rbx
-        ret
+        mov rax, rbx ; Move k to output
+        ret          ; Profit?
 
 
 

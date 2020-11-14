@@ -1,0 +1,14 @@
+global gauss
+
+; 1st argument: rdi
+; return value: rax
+
+gauss:	mov rax, rdi	; rax := rdi
+	mov rcx, rdi	; rcx := rdi
+	mul rcx		; rdx:rax := rax * rcx
+	add rax, rdi	; rax := rax + rdi
+	mov rdx, 0	; 64 leading zeros
+	mov rcx, 2	; rcx := 2
+	div rcx		; rax := rdx:rax : rcx
+	ret
+
