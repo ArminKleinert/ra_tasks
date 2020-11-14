@@ -42,7 +42,6 @@ int main(int argc, char *argv[])
 
 	const uint64_t res = collatz(val);
 	const uint64_t chk = collatz_check(val);
-  printf("%d\n", chk);
 	printf("collatz(%" PRIu64 ") = %" PRIu64 "[%s]\n", val, res,
 	       chk == res ? "CORRECT" : "WRONG");
 
