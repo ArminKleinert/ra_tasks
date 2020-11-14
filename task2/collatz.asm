@@ -1,46 +1,49 @@
-; rcx = k
-; rdi = n
+; rax = n
+; rbx = k
 
         global collatz
 collatz:  
-        xor rcx, rcx
+        mov rax, rdi ; move n into rax
+        xor rbx, rbx ; k = 0
 
 coz_loop_start:
-        cmp rdi, 1
+        ; end if n <= 1
+        cmp rax, 1
         jle coz_loop_end
 
-        ; Check if rdi is even using rbx as intermediate register
-        mov rbx, rdi
-        and rbx, 1           ; Discard all but lowest bit; If the LSB is 1, the number is odd
-        jnz coz_if_mid
+        ; if start
 
-        ; rdi /= 2
-        ;mov rbx, rcx
-        ;mov rax, rdi
-        ;mov rcx, 2
-        ;mov rdx, 0
-        ;div rcx
-        ;mov rdi, rax
-        ;mov rcx, rbx
+        ; is_even(n)
+        mov rcx, rax
+        and rcx, 1
+        jnz coz_if_else
+
+        ; n /= 2
+        mov rcx, 2
+        xor rdx, rdx
+        div rcx
         
-        shr rdi, 1
+        ; Alternative for n/=2 is
+        ;shr rax, 1
+
         jmp coz_if_end
-coz_if_mid:
-        ; rdi *= 3
-        mov rax, rdi
-        mov rdi, 3
-        mul rdi
-        mov rdi, rax
-        
-        inc rdi              ; rdi++
+coz_if_else:
+        ; n *= 3
+        xor rdx, rdx
+        mov rcx, 3
+        mul rcx
+
+        ; n++
+        inc rax
 
 coz_if_end:
-        inc rcx              ; rcx ++
+        ; k++
+        inc rbx
 
         jmp coz_loop_start
         
 coz_loop_end:
-        mov rax, rcx
+        mov rax, rbx
         ret
 
 
