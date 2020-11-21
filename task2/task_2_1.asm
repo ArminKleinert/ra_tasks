@@ -1,11 +1,10 @@
 
-        global bla           ; For testing
-bla:    cmp     rdi, 10      ; Assuming x is in rdi
+        cmp     x, 10        ; Assuming x is in rdi
         jl      .LCS         ; Go to the call to S
-        cmp     rdi, 10
+        cmp     x, 10
         je      .LCT         ; Go to the call to T
         ; No check for >10 is necessary
-        ; Also no call to W sind there is no "else" condition.
+        ; Also no call to W since there is no "else" condition.
         call    V            ; Call V
         jmp     .LEND        ; Go to end
 .LCS:                        ; Call S
@@ -14,75 +13,67 @@ bla:    cmp     rdi, 10      ; Assuming x is in rdi
 .LCT:                        ; Call T
         call    T
 .LEND:
-        mov     rdx, 0       ; I made the function return 0
-        ret                  ; Return something for testing
+        ; ...
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-        global while_test    ; For testing.
-while_test:
-        cmp rdi, 10          ; Assuming x is in rdi
+        cmp x, 10          ; Assuming x is in rdi
         je .LEND
 .LSTART:
         call S
         mov rdi, rax
-        cmp rdi, 10
+        cmp x, 10
         jne .LSTART
 .LEND:
-        mov rax, rdi
-        ret                  ; Return something for testing
+        ; ...
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Use loop instruction. rcx is the loop counter. 
+; If it is 0 when the loop instruction is encountered, 
+; the instruction will be ignored.
 
-        global while_test_2  ; For testing.
-while_test:
-        cmp rdi, 10          ; Assuming x is in rdi
+        cmp x, 10            ; Assuming x is in rdi
         je .LEND
 .LSTART1:
         call S
-        mov rdi, rax
-        mov rcx, rdi         ; Move x to rcx
+        mov x, rax
+        mov rcx, x           ; Move x to rcx
         sub rcx, 10          ; Sub 10 from rcx. If rcx was ==10, 
                              ; the loop below will not trigger.
         loop .LSTART1
-        mov rax, rdi
-        ret                  ; Return something for testing
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-; Assuming that S handles 64-bit values
+dwt_start:       ; Jump label
+        call S               ; rax = S()
+        mov x, rax
+        cmp x, 10          ; Compare to 10
+        jne dwt_start ; Restart loop if rax != 10
 
-        global do_while_test ; For testing
-do_while_test:
-dwt_start:                   ; Jump label
+; Not using any x since there is no real use for it
+dwt_start_alternative:       ; Jump label
         call S               ; rax = S()
         cmp rax, 10          ; Compare to 10
-        jne dwt_start        ; Restart loop if rax != 10
-        ret                  ; Return something for testing
+        jne dwt_start_alternative ; Restart loop if rax != 10
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; Assuming that S handles 64-bit values
 
-        global for_test      ; For testing
-for_test:
-        xor rbx, rbx         ; Using rbx as for-counter (init as 0)
+        xor i, i             ; Using i as for-counter (init as 0)
         ; It is not necessary to check rbx here.
 for_start:                   ; Jump label
-        mov rdi, rbx         ; Set rdi to current iteration (ebx)
+        mov rdi, i           ; Set rdi to current iteration (i)
         call S               ; rax = S(rdi)
-        inc rbx
-        cmp rbx, 10          ; Compare to 10
-        jne for_start        ; Restart loop if rax != 10
-        ret
+        inc i
+        cmp i, 10            ; Compare to 10
+        jl for_start         ; Restart loop if i < 10
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; Assuming that S handles 64-bit values
-; Unrolled for
+; Unrolled for :)
 
-        global for_test_2    ; For testing
-for_test_2:
         ; Iteration 0
         xor rdi, rdi         ; Set rdi to 0
         call S               ; rax = S(rdi)
@@ -119,6 +110,7 @@ for_test_2:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; Assuming that S handles 64-bit values
+; x is rax
 
         global switch_test   ; For testing
 switch_test:
