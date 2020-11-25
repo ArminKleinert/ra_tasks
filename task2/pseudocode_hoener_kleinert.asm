@@ -1,5 +1,34 @@
+; Abgabe von Ruth Höner zu Siederdissen und Armin Kleinert
 
-        cmp     x, 10        ; Assuming x is in rdi
+; if(x < 10) {S();} 
+; else if(x == 10) {T();} 
+; else if(x > 10) {V();} 
+; else {W();}
+
+; Wir waren uns nicht sicher, ob mehrere Jumps nach einem cmp ok sind, 
+; aber scheinbar schon:
+; https://stackoverflow.com/questions/21580187/is-it-safe-to-do-two-consecutive-jumps-in-assembly
+        cmp     x, 10 
+        jb      .LCS         ; Go to the call to S
+        je      .LCT         ; Go to the call to T
+        ja      .LCV         ; Go to the call to T
+        call    W            ; Call W
+        jmp     .LEND        ; Go to end
+.LCS:                        ; Call S
+        call    S
+        jmp     .LEND        ; Go to end
+.LCT:                        ; Call T
+        call    T
+        jmp     .LEND        ; Go to end
+.LCV:
+        call    V            ; Call V
+        jmp     .LEND        ; Go to end
+.LEND:
+        ; ...
+
+; Alternative
+
+        cmp     x, 10
         jl      .LCS         ; Go to the call to S
         cmp     x, 10
         je      .LCT         ; Go to the call to T
@@ -16,14 +45,30 @@
         ; ...
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; while(x != 10) {x = S();}
+; Variante 1
 
-        cmp x, 10          ; Assuming x is in rdi
+        cmp x, 10
         je .LEND
 .LSTART:
         call S
-        mov rdi, rax
+        mov x, rax
         cmp x, 10
         jne .LSTART
+.LEND:
+        ; ...
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; while(x != 10) {x = S();}
+; Variante 2
+
+.LSTART:
+        cmp x, 10
+        je .LEND
+        call S
+        mov x, rax
+        jmp .LSTART
 .LEND:
         ; ...
 
@@ -31,6 +76,9 @@
 ; Use loop instruction. rcx is the loop counter. 
 ; If it is 0 when the loop instruction is encountered, 
 ; the instruction will be ignored.
+
+; while(x != 10) {x = S();}
+; Variante 3
 
         cmp x, 10            ; Assuming x is in rdi
         je .LEND
@@ -41,6 +89,8 @@
         sub rcx, 10          ; Sub 10 from rcx. If rcx was ==10, 
                              ; the loop below will not trigger.
         loop .LSTART1
+.LEND1:
+        ; ...
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -48,7 +98,7 @@ dwt_start:       ; Jump label
         call S               ; rax = S()
         mov x, rax
         cmp x, 10          ; Compare to 10
-        jne dwt_start ; Restart loop if rax != 10
+        jne dwt_start      ; Restart loop if rax != 10
 
 ; Not using any x since there is no real use for it
 dwt_start_alternative:       ; Jump label
@@ -57,17 +107,19 @@ dwt_start_alternative:       ; Jump label
         jne dwt_start_alternative ; Restart loop if rax != 10
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; for-loop
 
 ; Assuming that S handles 64-bit values
+; i = rdi
 
-        xor i, i             ; Using i as for-counter (init as 0)
-        ; It is not necessary to check rbx here.
+        xor rdi, rdi
+                             ; Using rdi as for-counter (init as 0)
+        ; It is not necessary to check rdi here.
 for_start:                   ; Jump label
-        mov rdi, i           ; Set rdi to current iteration (i)
         call S               ; rax = S(rdi)
-        inc i
-        cmp i, 10            ; Compare to 10
-        jl for_start         ; Restart loop if i < 10
+        inc rdi
+        cmp rdi, 10          ; Compare to 10
+        jb for_start         ; Restart loop if rdi < 10
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -105,15 +157,13 @@ for_start:                   ; Jump label
         mov rdi, 9
         call S
         ; End
-        ret
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; switch-case
 
 ; Assuming that S handles 64-bit values
 ; x is rax
 
-        global switch_test   ; For testing
-switch_test:
         call S
         cmp rax, 1
         je stc1              ; To case 1
@@ -128,22 +178,20 @@ stc2:                        ; Case 2
         sub rax, 20
 stc10:                       ; Case 10
         mov rdi, 10
-        mul
+        mul rdi
 stcd:                        ; Default case
         mov rax, 100
-        ret
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; Assuming that S handles 64-bit values
+; x is rax
 
 ; Switch test optimized?
 
-        global switch_opt_test   ; For testing
-switch_test:
-        call S                ; Still call S, assuming it changes something like printing to the console
-        mov rax, 100         ; Set output
-        ret
+        call S                ; Still call S, assuming it changes
+                              ; something like printing to the console
+        mov rax, 100          ; Set output
 
 
 

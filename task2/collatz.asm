@@ -1,51 +1,43 @@
-; rax = n
-; rbx = k
+; Abgabe von: Ruth Höner zu Siederdissen und Armin Kleinert
+global collatz
 
-        global collatz
-collatz:  
-        mov rax, rdi ; move n into rax
-        xor rbx, rbx ; k = 0
+; 1st argument rdi
+; n = rax
+; k = rcx
+; return rax
 
-coz_loop_start:
-        ; end if n <= 1
-        cmp rax, 1
-        jle coz_loop_end
+collatz: 	mov rcx, 0	; rcx := 0
+		mov rax, rdi	; rax := rdi
+		mov rdx, 0 ;                        <= Hier
 
-        ; if start
+.while:		cmp rax, 1
+		jbe .afterwhile	; jump to afterwhile if rax <= 1
 
-        ; is_even(n)
-        mov rcx, rax
-        and rcx, 1
-        jnz coz_if_else ; Not even -> Jump to else
+		push rdx
+		push rax	; preserve value of rax
+		call .is_even	; call .is_even
+		pop rax		; rax back to n
 
-        ; n /= 2
-        mov rcx, 2
-        xor rdx, rdx
-        div rcx
-        
-        ; Alternative for n/=2 is
-        ;shr rax, 1
+		cmp rdx, 0	; compare rest of division
+		pop rdx
+		jne .else	; jump to else if not equal
+		mov rsi, 2
+		div rsi		; rax := n /= 2
+		jmp .afterif	; jump to afterif
 
-        jmp coz_if_end
-coz_if_else:
-        ; n *= 3
-        xor rdx, rdx
-        mov rcx, 3
-        mul rcx
+.else:		mov rsi, 3
+		mul rsi		; rax := n *= 3
+		add rax, 1	; rax := n++
 
-        ; n++
-        inc rax
+.afterif:	add rcx, 1
+		jmp .while
 
-coz_if_end:
-        ; k++
-        inc rbx
+.is_even:	;mov rdx, 0	; 64 leading zeros
+		mov rsi, 2	; rsi := 2
+		div rsi
+		ret		; return to call
 
-        jmp coz_loop_start
-        
-coz_loop_end:
-        mov rax, rbx ; Move k to output
-        ret          ; Profit?
-
-
+.afterwhile:	mov rax, rcx
+		ret		; return to wrapper
 
 
