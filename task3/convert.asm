@@ -53,7 +53,7 @@ strToInt:
           mov r8, rdi
           mov r9, rsi
           
-          mov r10, 1 ; Sign 
+          mov r10, 0 ; Sign 
           
           cmp byte [r8], 43 ; Check for '+'
           je .sti_signed
@@ -61,7 +61,7 @@ strToInt:
           cmp byte [r8], 45 ; Check for '-'
           jne .sti_setup ; If not, There is no sign
           
-          neg r10 ; Set sign to -1
+          mov r10, 1 ; Set sign
           
 .sti_signed:
           inc r8 ; str++
@@ -78,7 +78,7 @@ strToInt:
 
 .sti_loop:
           cmp r13, 0   ; Check if whole string was iterated
-          jbe .sti_end
+          jbe .sti_after_loop
           
           push rcx ; Save rcx to use it for reading c from string
           xor rcx, rcx
@@ -128,7 +128,7 @@ strToInt:
           
           ; Multiply c by rax
           xor rdx, rdx
-          mul r11      ; c *= r11
+          mul r11      ; rax *= c
           xor rdx, rdx ; rdx should always be empty, but just to make sure...
           
           ; Add to result
@@ -142,11 +142,15 @@ strToInt:
           ; Jump to beginning of loop
           jmp .sti_loop
 
-.sti_end:
-          mov rax, r12 ; Move res into rax
-          mov rdx, 0
-          imul r10      ; Set sign in rax (r10 is always 1 or -1)
+.sti_after_loop:
+          mov rax, r12
 
+          ; If the sign was '-', negate result
+          cmp r10, 1
+          jne .sti_end
+          neg rax      ; Set sign in rax (r10 is always 1 or -1)
+
+.sti_end:
           ret
           
 .sti_error:

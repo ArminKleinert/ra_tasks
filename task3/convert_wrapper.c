@@ -134,7 +134,7 @@ int main(int argc, char *argv[])
   */
   
   int64_t val = strToInt(argv[1], base);
-  printf("%lu\n", val);
+  printf("%lld\n", val);
   /*
 	char int_str[MAX_STR_LEN];
 	size_t len = intToStr(val, base, int_str,
