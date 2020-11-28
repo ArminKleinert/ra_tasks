@@ -126,15 +126,38 @@ int main(int argc, char *argv[])
 		return 2;
 	}
 	uint8_t base = (uint8_t)_base;
-
-	/*int64_t val = strToInt(argv[1], base);
-	printf("strToInt: %s_%hhu = %" PRId64 "_10%s\n",
-			argv[1], base, val, strToInt_unimplemented ?
-			" [UNIMPLEMENTED]" : "");
-  */
+  int64_t val = 0;
   
-  int64_t val = strToInt(argv[1], base);
-  printf("%lld\n", val);
+  val = strToInt(argv[1], base);
+	//printf("strToInt: %s_%hhu = %" PRId64 "_10%s\n",
+	//		argv[1], base, val, strToInt_unimplemented ?
+	//		" [UNIMPLEMENTED]" : "");
+//   printf(%
+    
+  val = strToInt("0", base);
+  printf("%ld\n", val);
+  
+  val = strToInt("-0", base);
+  printf("%ld\n", val);
+  
+  val = strToInt("FF", base);
+  printf("%ld\n", val);
+  
+  val = strToInt("-FF", base);
+  printf("%ld\n", val);
+  
+  val = strToInt("15", base);
+  printf("%ld\n", val);
+  
+  val = strToInt("-15", base);
+  printf("%ld\n", val);
+  
+  val = strToInt("FFFFFFFF", base);
+  printf("%ld\n", val);
+  
+  val = strToInt("-FFFFFFFF", base);
+  printf("%ld\n", val);
+  
   /*
 	char int_str[MAX_STR_LEN];
 	size_t len = intToStr(val, base, int_str,
@@ -142,6 +165,10 @@ int main(int argc, char *argv[])
 	printf("intToStr: %" PRId64 "_10 = %s_%hhu, length: %zu%s\n", val,
 			int_str, base, len, intToStr_unimplemented ?
 			" [UNIMPLEMENTED]" : "");
+  
+  size_t len = intToStr(val, base, int_str, MAX_STR_LEN);
+  char fstchr = int_str[0];
+  printf("intToStr %ld %d = %s %hhu (%lu)\n", val, base, int_str, fstchr, len);
   */
   
 	return 0;

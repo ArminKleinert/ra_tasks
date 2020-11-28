@@ -158,8 +158,193 @@ strToInt:
           mov rax, 0
           ret
 
-          global intToStr
-intToStr: 
-          mov rax, 0
+; Reihenfolge Register: rdi, rsi, rdx, rcx, r8, r9
+
+; int64_t to string
+; size_t intToStr(int64_t num, uint8_t base, char* str, size_t buf_len)
+;
+; rdi = num (int64_t)
+; rsi = base (uint8_t)
+; rdx = str (char*)
+; rcx = buf_len (size_t)
+;
+; r8 = original string
+; r9 = base
+; r10 = buffer (pointer to original str but will be incremented)
+; r11 = sign
+; r12 = bytes_written (size_t; result)
+; r13 = num (int64_t)
+; r14 = buf_len (size_t)
+; r15 = temporary values
+          global intToStr 
+intToStr:
+          ; Check if base is valid (>1 and <= 36).
+          ; If not, jump to error.
+          cmp rsi, 1  ; Base too low
+          jbe .its_error
+          cmp rsi, 36 ; Base too high
+          ja .its_error
+          cmp rcx, 2  ; Not enough space in buffer
+          jb .its_error
+          cmp rdi, 0  ; Buffer points to null
+          je .its_error
+          
+          jmp .its_setup
+          
+.its_error: ; Early error
+          xor rax, rax
           ret
 
+.its_setup:
+          mov r8, rdx  ; Copy str pointer
+          mov r10, rdx ; Copy str pointer
+          mov r9, rsi  ; Copy base
+          mov r13, rdi ; Copy num
+          mov r14, rcx ; Copy buf_len
+
+          xor r11, r11 ; Sign
+          xor r12, r12 ; bytes_written
+
+          ; Check if num is zero
+          cmp r13, 0
+          jne .its_not_0 ; If not 0, ignore the next few lines.
+
+          mov byte [r10], 48 ; Write '0' to first char
+          ;inc r10
+          ;mov byte [r10], 0  ; Add 0-terminator
+          mov rax, r10
+          ret
+
+.its_not_0:
+          cmp r13, 0
+          jge .its_loop
+          
+          mov r11, 1
+          neg r13
+
+.its_loop:
+          ; End loop if num <= 0
+          cmp r13, 0
+          jle .its_after_loop
+          
+          ; bytes_written >= buf_len-1
+          mov r15, r14
+          dec r15
+          cmp r12, r15
+          jl .its_do_calcs
+          ; If (bytes_written >= buf_len-1), there is a problem
+          ; so just return here and now.
+          mov rax, r12
+          ret
+          
+.its_do_calcs:
+          ; rem = num % base
+          ; r15 = r13 % r9
+          mov rax, r13
+          mov rdx, 0
+          div r9
+          mov r15, rdx
+          
+          ; Check whether we need a digit (rem <= 9) or a letter (rem > 9)
+          cmp r15, 9
+          jle .its_need_digit
+          
+          ; If we are here, rem is >9 and we need a letter
+          sub r15, 10 ; Subtract 10, so rem can be between 0 and 26, depending on number and base
+          add r15, 65 ; Add 'A', so rem is in 'A'..'Z', depending on the base
+          jmp .its_if_need_end
+
+.its_need_digit:
+          ; We need a digit and rem is between 0 and 9 (inclusive)
+          add r15, 48 ; Add '0', to get the right char
+
+.its_if_need_end:
+          mov rax, r15 ; Move r15 into rax so that we can access al (lowest byte in rax)
+          mov byte [r10], al ; *buffer = rem
+          
+          inc r10 ; buffer ++
+          inc r12 ; bytes_written ++
+          
+          ; num = num / base
+          mov rax, r13
+          mov rdx, 0
+          div r9
+          mov r13, rax
+          
+          jmp .its_loop
+
+.its_after_loop:
+          cmp r11, 1
+          jne .its_append_null
+          
+          mov byte [r10], 45 ; *buffer = '-'
+          inc r10            ; buffer ++
+          inc r12            ; bytes_written ++
+
+.its_append_null:
+          mov byte [r10], 0  ; *buffer = '\0'
+          
+          ; reverse (str, bytes_written)
+          ; Reverse the input string, NOT the buffer!
+          mov rdi, r8
+          mov rsi, r12
+          call reverse_array
+          
+          ; return bytes_written
+          mov rax, r12
+          ret
+
+
+
+; Bytewise-reverse array function, made for use in intToStr.
+; rdi = array (char*)
+; rsi = n (size_t)
+;
+; rsi = high index
+; rcx = low index
+; r15 = reg for temporary values
+reverse_array:
+          cmp rsi, 0
+          je .ra_end
+          
+          dec rsi    ; high = n-1
+          mov rcx, 0 ; low = 0
+          
+.ra_loop:
+          cmp rcx, rsi
+          jae .ra_end
+  
+          ; push value from arr[low]
+          
+          add rdi, rcx
+          xor rax, rax
+          mov al, byte [rdi]
+          push ax
+          sub rdi, rcx
+          
+          ; push value from arr[high]
+          add rdi, rsi
+          xor rax, rax
+          mov al, byte [rdi]
+          push ax
+          sub rdi, rsi
+          
+          ; pop value from arr[high] into arr[low]
+          add rdi, rcx
+          xor rax, rax
+          pop ax
+          mov al, byte [rdi]
+          sub rdi, rcx
+          
+          ; pop value from arr[low] into arr[high]
+          add rdi, rsi
+          xor rax, rax
+          pop ax
+          mov al, byte [rdi]
+          sub rdi, rsi
+          
+          inc rcx
+          dec rsi
+.ra_end:
+          mov rax, 0
+          ret

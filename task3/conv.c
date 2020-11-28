@@ -22,9 +22,9 @@ size_t length1 (char *s){
 
 int64_t strToInt (char* str, int base) { // Check for valid base
   if (base <= 1)
-    goto error;
+    return 0;
   if (base > 36)
-    goto error;
+    return 0;
 
   // Set initial sign
   int sign = 1;
@@ -56,12 +56,12 @@ int64_t strToInt (char* str, int base) { // Check for valid base
       c -= 7;
     
     if (c < 48) // char < '0', thus always invalid
-      goto error;
+      return 0;
     
     c -= 48; // Make 0-based
     
     if (c >= base)
-      goto error;
+      return 0;
     
     int64_t temp64 = c; // Expand c to 64 bit
     
@@ -80,19 +80,123 @@ int64_t strToInt (char* str, int base) { // Check for valid base
 
   res *= sign;
   return res;
-  
-  error:
-  res = 0;
-  return res;
 }
 
-//
-//finalres = 0
-//return finalres
+// -----------------------------------------------
+
+#include <stdbool.h>
+
+void reverse(char arr[], size_t n) {
+    for (int low = 0, high = n - 1; low < high; low++, high--) {
+        int temp = arr[low];
+        arr[low] = arr[high];
+        arr[high] = temp;
+    }
+}
+
+size_t intToStr(int64_t num, uint8_t base, char* str, size_t buf_len) { 
+  char* buffer = str;
+  size_t bytes_written = 0; 
+  bool isNegative = false; 
+  int64_t rem = 0;
+  
+  // Error cases
+  if (base <= 1)
+    return 0;
+  if (base > 36)
+    return 0;
+  if (buf_len < 2)
+    return 0;
+  if (buffer == NULL)
+    return 0;
+
+  // Number is 0
+  if (num == 0) {
+      *buffer = '0'; // =48
+      buffer++;
+      *buffer = '\0'; // =0
+      return 1; 
+  } 
+
+  // Number is negative
+  if (num < 0) {
+      isNegative = true; 
+      num = -num; 
+  }
+
+  // Process individual digits
+  while (num > 0) {
+    if (bytes_written >= buf_len-1)
+      return bytes_written;
+
+    rem = num % base;
+
+    if (rem > 9) {
+      // Need letter
+      rem -= 10;
+      rem += 'A'; // +65
+      *buffer = rem;
+    } else {
+      // Need digit
+      rem += '0'; // +48
+      *buffer = rem;
+    }
+    
+    buffer ++;
+    bytes_written ++;
+    num = num / base;
+  }
+
+  // If number is negative, append '-'
+  if (isNegative) {
+    *buffer = '-';
+    buffer ++;
+    bytes_written ++;
+  }
+
+  *buffer = '\0'; // Append string terminator
+
+  // Reverse the string 
+  reverse(str, bytes_written); 
+
+  return bytes_written; 
+}
 
 int main() {
   //printf("%ld\r\n", strToInt("+64", 10));
-  printf("%ld\r\n", strToInt("FF", 16));
+  char s0[15]; 
+  char s1[15]; 
+  char s2[15]; 
+  char s3[15]; 
+  char s4[15]; 
+  char s5[15]; 
+  char s6[2]; 
+  char s7[15]; 
+  char s8[15]; 
+  
+  printf("%lu\r\n", intToStr(24, 10, s0, 15));
+  printf("%s\r\n", s0);
+  printf("%lu\r\n", intToStr(-24, 10, s1, 15));
+  printf("%s\r\n", s1);
+  printf("\r\n");
+  printf("%lu\r\n", intToStr(11, 2, s2, 15));
+  printf("%s\r\n", s2);
+  printf("%lu\r\n", intToStr(-11, 2, s3, 15));
+  printf("%s\r\n", s3);
+  printf("\r\n");
+  printf("%lu\r\n", intToStr(15, 8, s4, 15));
+  printf("%s\r\n", s4);
+  printf("%lu\r\n", intToStr(-15, 8, s5, 15));
+  printf("%s\r\n", s5);
+  printf("\r\n");
+  printf("%lu\r\n", intToStr(-15, 16, s6, 2));
+  printf("%s\r\n", s6);
+  printf("%lu\r\n", intToStr(22570, 36, s7, 15));
+  printf("%s\r\n", s7);
+  printf("\r\n");
+  printf("%lu\r\n", intToStr(0, 10, s8, 10));
+  printf("%s\r\n", s8);
+  
   /*
   printf("%ld\r\n", strToInt("1111", 2));
   printf("%ld\r\n", strToInt("1111", 1));
