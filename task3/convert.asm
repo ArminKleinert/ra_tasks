@@ -209,10 +209,10 @@ intToStr:
           cmp r13, 0
           jne .its_not_0 ; If not 0, ignore the next few lines.
 
-          mov byte [r10], 48 ; Write '0' to first char
-          ;inc r10
-          ;mov byte [r10], 0  ; Add 0-terminator
-          mov rax, r10
+          mov [r10], byte 48 ; Write '0' to first char
+          inc r10
+          mov [r10], byte 0  ; Add 0-terminator
+          mov rax, 1
           ret
 
 .its_not_0:
