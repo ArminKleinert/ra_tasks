@@ -7,7 +7,7 @@ global strToInt
 
 ; register use
 ; rcx = counter (i)
-; r8 = s
+; r8 = sign
 ; cl = current ascii
 
 strToInt:	xor rax, rax	; zero rax

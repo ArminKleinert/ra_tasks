@@ -10,31 +10,31 @@ Excess-0 Darstellung. Die Wahl macht Sinn, da beide Zahlen positiv sind.
 ----------
   01101000
 
-2. 32 - 14
+2. 36 - 14
 1s Complement
-  00100000 (32)
+  00100100 (36)
 - 00001110 (14)
 ----------
-  00100000
+  00100100
 + 11110001 // 1s Complement von 14
 ----------
- 100010001 // Mit Carry
-  00010001+1 // Carry Addieren
+ 100010101 // Mit Carry
+  00010101+1 // Carry Addieren
 ----------
-  00010010
+  00010110
 
 2s Complement
-  00100000 (32)
+  00100100 (36)
 - 00001110 (14)
 ----------
-  00100000
+  00100100
 +(11110001 + 1)
 ----------
-  00100000
+  00100100
 + 11110010 // 2s complement von 14)
 ----------
- 100010010 // Mit Carry
-  00010010 // Carry verwerfen
+ 100010110 // Mit Carry
+  00010110 // Carry verwerfen
 
 
 
@@ -83,7 +83,7 @@ B+V
  101101000 // Mit Carry
   01101000+1 // Carry addieren
 ----------
-  01101001 // Underflow!
+  01101001 // Overflow!
 
 2s Complement
 (-01110001) (113)
@@ -99,7 +99,7 @@ B+V
 + 11011011 // 37 in 2s Complement
 ----------
  101101010
-  01101010 // Ohne Carry -> Underflow!
+  01101010 // Ohne Carry -> Overflow!
 
 
 
