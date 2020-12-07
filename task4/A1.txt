@@ -1,0 +1,28 @@
+1. Warum werden i. d. R. Fließkommazahlen und nicht Festkommazahlen zur Darstellungvon reellen Zahlen verwendet? Anders formuliert: Welche Vorteile bringt diese Art der Darstellung?
+- Mit Fließkommazahlen können sehr große und sehr kleine Zahlen besser dargestellt werden, daher eignen sie sich besser zur Darstellung von reellen Zahlen.
+- Division ist mit Floating Point Zahlen je nach Zahl sehr einfach durchzuführen und kann sogar schneller sein als Divion bei Integer-Typen.
+- Fixed-Point Formate kennen kein NaN (0/0), +Infinity und -Infinity (zumindest konnte ich keine Referenzen dazu finden).
+
+2. Für eine Fließkommazahl-Darstellung werden die gegebenen Bits in drei Abschnitteunterteilt. Wie heißen diese Abschnitte?
+Vorzeichen, Mantisse und Charakteristik (Exponent)
+
+3. Welchen Vorteil bringt es wenn dem Exponenten mehr Bits zugeteilt werden bzw.welchen Vorteil bringt es wenn der Mantisse mehr Bits zugeteilt werden?
+- Mehr Bits Exponent => Größerer darstellbarer Bereich
+- Mehr in Mantisse => Darstellung genauer
+
+4. Erklären Sie Unterlauf (Underflow) und Überlauf (Overflow) für Fließkommazahlen.
+- Eine Zahl wird betragsmäßig kleiner (Underflow) oder größer (Overflow), als das Format darstellen kann.
+
+5. Nennen Sie Beispiele für Festlegungen, die der IEEE-754 Standard mitbringt. Warumist eine solche Standardisierung sinnvoll?
+
+
+6. Was ist die betragsmäßig größte bzw. kleinste darstellbare Zahl im IEEE-75432 bitStandard?
+
+
+
+
+
+
+Quellen:
+Vorlesung
+Vortrag von Andrey Alexandrescu (In 1.; Kann das Video nicht mehr finden)
