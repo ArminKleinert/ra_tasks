@@ -1,6 +1,6 @@
 ; Abgabe von: Ruth Höner zu Siederdissen und Armin Kleinert
 
-; Kpmmert sich nicht um korrekte Rundung und den Fall das Charakteristik=0
+; Kümmert sich nicht um korrekte Rundung und den Fall das Charakteristik=0
 
 ; Reihenfolge Register: rdi, rsi, rdx, rcx, r8, r9
 
