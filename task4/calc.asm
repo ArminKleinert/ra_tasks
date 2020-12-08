@@ -1,5 +1,7 @@
 ; Abgabe von: Ruth Höner zu Siederdissen und Armin Kleinert
 
+; Kpmmert sich nicht um korrekte Rundung und den Fall das Charakteristik=0
+
 ; Reihenfolge Register: rdi, rsi, rdx, rcx, r8, r9
 
 ; calc_add(float f0, float f1)
@@ -114,10 +116,18 @@ calc_add:
 .ca_normalise:
           shl r11, 7
           add r9, 1
+          
+          xor r15, r15
 
 .ca_normalise_loop:
           shl r11d, 1
           jc .ca_end
+          
+          ; Error check: If r11d is 0, quit
+          inc r15
+          cmp r15, 32
+          je .ca_end
+          
           sub r9, 1
           jmp .ca_normalise_loop
 
