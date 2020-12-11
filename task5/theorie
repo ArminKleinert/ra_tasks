@@ -1,0 +1,38 @@
+1.Was ist ein Stack im Allgemeinen? Was ist ein durch Hardware unterstützter Stack?Beschreiben Sie die grundlegende Funktionsweise und Möglichkeiten.
+
+Ein Stack ist eine Datenstruktur, die einen Stapel simulieren soll. Elemente können auf dem Stack abgelegt (PUSH) oder davon abgehoben (POP) werden. Deshalb nennt man die Arbeitsweise von Stacks auch Last-In-First-Out (LIFO).
+
+Ein Stack, wie er in der Hardware verwendet wird, erlaubt random-access. Dh. man kann auf nicht nur auf den obersten Teil des Stacks zugreifen. Er wird genutzt, um wichtige Daten zu speichern. Dazu gehören der Program Counter beim Aufruf einer Funktion sowie, wenn benötigt, temporäre Variablen und Parameter.
+
+Das ist zumindest der Sinn des Runtime-Stacks. Es gibt auch andere Arten von Stacks, die von Computern verwendet werden: System Stack, User Stack und Data Stack.
+
+Im Code wird die Position des obersten Elements im Stack im Register ESP (Stack Pointer) gespeichert. Das Register EBP (Base Pointer) zeigt auf den Anfang der aktuellen Stackframe.
+
+2. Warum wird bei einem Unterfunktionsaufruf (call) der Inhalt des Program Counter auf dem Stack gesichter, bei einem Sprung (jmp) aber nicht?
+
+
+3. Globale Variablen erhalten vom C-Compiler feste Adressen im Hauptspeicher, sogenannte statische Speicherallokation. Funktionslokale Variablen werden auf dem Stack angelegt, dies wird automatische Speicherallokation genannt. Warum wird das so gemacht?
+
+
+4. Was ist ein Stackframe? Warum sind Stackframes sinnvoll?
+
+
+5. Erläutern Sie in diesem Zusammenhang die x86 Befehle ENTER und LEAVE. Was muss beachtet werden wenn sowohl ENTER und LEAVE als auch PUSH und POP benutzt werden sollen?
+
+
+Warum ist die iterative Variante vom Fibonacci-Rechner so viel schneller?
+- Sie verwendet Register und verzichtet auf den Stack. Das ist schneller, da die Register direkt in der CPU liegen, also direkt angesprochen werden können. Der Stack dagegen liegt im RAM, der über einen Bus angesprochen werden muss. Für jeden Rekursiven Aufruf muss die aktuelle Stackframe (erklärt in Aufgabe 4) gespeichert (Teil von CALL) und später gelesen werden, sobald die aufgerufene Funktion den RET Befehl nutzt.
+
+
+
+
+
+
+
+
+
+Bücherstapel
+Abstraktes Konstrukt
+Stapeln - Muss immer von oben entfernen
+
+wird in Asm verwendet, um Sachen abzulegen

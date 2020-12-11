@@ -37,16 +37,12 @@ asm_fib_it:
 ;
 ; rdi = n (uint64_t)
 asm_fib_rek:
-          ; n == 0 (cannot be <0 because n is unsigned)
-          cmp rdi, 0
-          je .fib_rek_zero
-
-          ; n >= 3
-          cmp rdi, 3
+          ; n >= 2
+          cmp rdi, 2
           jae .fib_rek_call
 
-          ; n <  3 (and n > 0)
-          mov rax, 1
+          ; n <  2
+          mov rax, rdi
           jmp .fib_rek_end
 
 .fib_rek_call:
@@ -62,9 +58,6 @@ asm_fib_rek:
 
           add rax, rdi ; add results of fib(n-1) and fib(n-2)
           jmp .fib_rek_end
-
-.fib_rek_zero:
-          mov rax, 0
 
 .fib_rek_end:
           ret
