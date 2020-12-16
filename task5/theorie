@@ -1,6 +1,6 @@
 1.Was ist ein Stack im Allgemeinen? Was ist ein durch Hardware unterstützter Stack?Beschreiben Sie die grundlegende Funktionsweise und Möglichkeiten.
 
-Ein Stack ist eine Datenstruktur, die einen Stapel simulieren soll. Elemente können auf dem Stack abgelegt (PUSH) oder davon abgehoben (POP) werden. Deshalb nennt man die Arbeitsweise von Stacks auch Last-In-First-Out (LIFO).
+Ein Stack ist eine abstrakte Datenstruktur, die einen Stapel simulieren soll. Elemente können auf dem Stack abgelegt (PUSH) oder davon abgehoben (POP) werden. Deshalb nennt man die Arbeitsweise von Stacks auch Last-In-First-Out (LIFO).
 
 Ein Stack, wie er in der Hardware verwendet wird, erlaubt random-access. Dh. man kann auf nicht nur auf den obersten Teil des Stacks zugreifen. Er wird genutzt, um wichtige Daten zu speichern. Dazu gehören der Program Counter beim Aufruf einer Funktion sowie, wenn benötigt, temporäre Variablen und Parameter.
 
@@ -10,29 +10,37 @@ Im Code wird die Position des obersten Elements im Stack im Register ESP (Stack 
 
 2. Warum wird bei einem Unterfunktionsaufruf (call) der Inhalt des Program Counter auf dem Stack gesichter, bei einem Sprung (jmp) aber nicht?
 
+Jumps werden meist innerhalb einer "Funktion" genutzt, nicht um andere Funktionen aufzurufen. Daher wird nicht erwartet, dass es einen Sprung zurück gibt. Deshalb gibt es keinen Grund, die Ausgangsposition des Sprungs zu speichern.
 
 3. Globale Variablen erhalten vom C-Compiler feste Adressen im Hauptspeicher, sogenannte statische Speicherallokation. Funktionslokale Variablen werden auf dem Stack angelegt, dies wird automatische Speicherallokation genannt. Warum wird das so gemacht?
 
+Globale Variablen können von mehreren Funktionen genutzt werden. Daher müssen sie getrennt von einer einzelnen Funktion gespeichert werden. So wissen alle Funktionen, die globale Variablen nutzen, wo genau diese Variablen gefunden werden können.
+Lokale Variablen auf dem Stack abzulegen macht Sinn, da der Speicherplatz beim Verlassen der Funktionnicht explizit gelöscht werden müssen (wie bei der Allokation im Heap). Stattdessen wird einfach der Stack Pointer geändert und der selbe Platz im Stack kann von einer anderen Funktion genutzt werden.
 
 4. Was ist ein Stackframe? Warum sind Stackframes sinnvoll?
 
+Eine Stackframe enthält bestimmte Informationen über die Funktion: Die Parameter, die Return Adresse (also den Program Counter zur Zeit des Aufrufs) und die lokalen Variablen.
+Dadurch haben die Parameter eine klare Position in der Stackframe und die Return Adresse kann schnell vom nächsten Aufruf der `ret` Funktion genutzt werden, um zur aufrufenden Funktion zurückzukehren.
 
 5. Erläutern Sie in diesem Zusammenhang die x86 Befehle ENTER und LEAVE. Was muss beachtet werden wenn sowohl ENTER und LEAVE als auch PUSH und POP benutzt werden sollen?
+
+Durch ENTER wird eine neue Stack Frame erstellt. Deshalb wird ENTER oft als erste Instruktion nach einem CALL aufgerufen. LEAVE gibt den durch ENTER allokierten Platz wieder frei (verschiebt also den Stack Pointer bis zur Return Adresse zurück). Dementsprechend wird LEAVE üblicherweise direkt vor RET aufgerufen.
+
+PUSH schreibt im Gegensatz zu ENTER nur einzelne Elemente (bzw. Words) auf den Stack. POP lädt eben diese Elemente wieder vom Stack. PUSH und POP eignen sich, um temporäre Variablen zu schreiben und zu lesen, wofür ENTER und LEAVE zu aufwendig sind.
+
+Die meisten Compiler für High-Level Sprachen verzichten, genauso wie die Programmierer, auf ENTER und LEAVE.
 
 
 Warum ist die iterative Variante vom Fibonacci-Rechner so viel schneller?
 - Sie verwendet Register und verzichtet auf den Stack. Das ist schneller, da die Register direkt in der CPU liegen, also direkt angesprochen werden können. Der Stack dagegen liegt im RAM, der über einen Bus angesprochen werden muss. Für jeden Rekursiven Aufruf muss die aktuelle Stackframe (erklärt in Aufgabe 4) gespeichert (Teil von CALL) und später gelesen werden, sobald die aufgerufene Funktion den RET Befehl nutzt.
+- Die C-Version des iterativen Codes läuft bei uns genauso schnell wie der Assembler-Code. Der rekursive Code dagegen ist schneller als unserer. Der C-Compiler nutzt mit den Optionen -O1, -O2 und -O3 verschiedene non-valite Register und hat damit weniger Zugriffe auf den Stack. 
+- Der C-Compiler benutzt nur einen CALL statt zwei und generiert mehr Abschnitte, um Sonderfälle zu handlen (z.B. wenn Inlining möglich ist).
 
 
-
-
-
-
-
-
-
-Bücherstapel
-Abstraktes Konstrukt
-Stapeln - Muss immer von oben entfernen
-
-wird in Asm verwendet, um Sachen abzulegen
+Quellen:
+- Vorlesungen
+- Erklärungen von Gianluca zum Konzept des Stacks
+- https://stackoverflow.com/questions/10057443/explain-the-concept-of-a-stack-frame-in-a-nutshell
+- https://stackoverflow.com/questions/3699283/what-is-stack-frame-in-assembly
+- https://stackoverflow.com/questions/50524734/how-the-local-variable-stored-in-stack
+- https://stackoverflow.com/questions/5959890/enter-vs-push-ebp-mov-ebp-esp-sub-esp-imm-and-leave-vs-mov-esp-ebp

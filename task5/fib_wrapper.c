@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
 
 	// C
 	simple_benchmark(c_fib_it, val, &m_ergs_it);
-	//simple_benchmark(asm_fib_rek1, val, &m_ergs_rek);
+	simple_benchmark(c_fib_rek, val, &m_ergs_rek);
 	drawTable("C", &m_ergs_it, &m_ergs_rek);
 
 	// ASM
@@ -134,10 +134,8 @@ uint64_t c_fib_it(uint64_t n)
 
 uint64_t c_fib_rek(uint64_t n)
 {
-	if (n == 0) {
-    return 0;
-  } else if (n < 3) {
-		return 1;
+  if (n < 2) {
+		return n;
 	} else {
 		return c_fib_rek(n - 1) + c_fib_rek(n - 2);
 	}

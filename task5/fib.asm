@@ -41,6 +41,8 @@ asm_fib_rek:
           cmp rdi, 2
           jae .fib_rek_call
 
+          popcnt eax, edi
+          
           ; n <  2
           mov rax, rdi
           jmp .fib_rek_end
@@ -49,11 +51,11 @@ asm_fib_rek:
           push rdi ; Save n on stack
           dec rdi ; n -= 1
           call asm_fib_rek ; Call fib(n-1)
-
+          
           pop rdi ; Pop n from stack
           sub rdi, 2 ; n -= 2
           push rax ; Push result of fib(n-1)
-          call asm_fib_rek ; Call fib(n-2)
+          call asm_fib_rek ; Call fib(n-2) => Result in rax
           pop rdi ; Pop result of fib(n-1)
 
           add rax, rdi ; add results of fib(n-1) and fib(n-2)
