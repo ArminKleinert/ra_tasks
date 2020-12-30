@@ -32,8 +32,8 @@ Die meisten Compiler für High-Level Sprachen verzichten, genauso wie die Progra
 
 
 Warum ist die iterative Variante vom Fibonacci-Rechner so viel schneller?
-- Sie verwendet Register und verzichtet auf den Stack. Das ist schneller, da die Register direkt in der CPU liegen, also direkt angesprochen werden können. Der Stack dagegen liegt im RAM, der über einen Bus angesprochen werden muss. Für jeden Rekursiven Aufruf muss die aktuelle Stackframe (erklärt in Aufgabe 4) gespeichert (Teil von CALL) und später gelesen werden, sobald die aufgerufene Funktion den RET Befehl nutzt.
-- Die C-Version des iterativen Codes läuft bei uns genauso schnell wie der Assembler-Code. Der rekursive Code dagegen ist schneller als unserer. Der C-Compiler nutzt mit den Optionen -O1, -O2 und -O3 verschiedene non-valite Register und hat damit weniger Zugriffe auf den Stack. 
+- Die iterative Version verwendet Register und verzichtet auf den Stack. Das ist schneller, da die Register direkt in der CPU liegen, also direkt angesprochen werden können. Der Stack dagegen liegt im RAM, der über einen Bus angesprochen werden muss. Für jeden Rekursiven Aufruf muss die aktuelle Stackframe (erklärt in Aufgabe 4) gespeichert (Teil von CALL) und später gelesen werden, sobald die aufgerufene Funktion den RET Befehl nutzt.
+- Die C-Version des iterativen Codes läuft bei uns genauso schnell wie der Assembler-Code. Der rekursive Code dagegen ist schneller als unserer. Der C-Compiler nutzt mit den Optionen -O1, -O2 und -O3 verschiedene non-volatile Register und hat damit weniger Zugriffe auf den Stack. 
 - Der C-Compiler benutzt nur einen CALL statt zwei und generiert mehr Abschnitte, um Sonderfälle zu handlen (z.B. wenn Inlining möglich ist).
 
 
