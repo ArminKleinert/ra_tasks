@@ -4,16 +4,9 @@
 
 extern int32_t formula_int(int32_t, int32_t, int32_t, int32_t, int32_t, int32_t,
                            int32_t, int32_t);
-//extern double formula_flt(double, double, double, double, double, double,
-//                          double, double);
+extern double formula_flt(double, double, double, double, double, double,
+                          double, double);
 
-
-static double formula_flt(double a, double b, double c, double d, double e,
-                        double f, double g, double h)
-{
-	return (((a + b) * (c - d)) * ((e * 8) + (f * 4) - (g / 2) + (h / 4))) /
-	       3;
-}
 
 /*
 static int32_t formula_int(int32_t a, int32_t b, int32_t c, int32_t d, int32_t e,
@@ -27,7 +20,26 @@ static int32_t formula_int(int32_t a, int32_t b, int32_t c, int32_t d, int32_t e
 static double check_flt(double a, double b, double c, double d, double e,
                         double f, double g, double h)
 {
-	return (((a + b) * (c - d)) * ((e * 8) + (f * 4) - (g / 2) + (h / 4))) / 3;
+	//return (((a + b) * (c - d)) * ((e * 8) + (f * 4) - (g / 2) + (h / 4))) / 3;
+
+  
+  a = a + b;
+  c = c - d;
+  e = e * 8;
+  f = f * 4;
+  g = g / 2;
+  h = h / 4;
+  
+  e = e + f;
+  e = e - g;
+  e = e + h;
+  
+  a = a * c;
+  a = a * e;
+  
+  a = a / 3;
+	return a;
+  
 }
 
 static int32_t check_int(int32_t a, int32_t b, int32_t c, int32_t d, int32_t e,
