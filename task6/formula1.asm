@@ -35,6 +35,7 @@ SECTION .text
 
 global formula_flt
 global formula_int
+global formula_int_shift
 
 ; double check_flt(double a, double b, double c, double d,
 ;                  double e, double f, double g, double h)
@@ -80,7 +81,7 @@ formula_flt:
 ; r9  = f (f*4)
 ; r10 = g
 ; r11 = h (h/4)
-formula_int:
+formula_int_shift:
         mov r10, [rsp+8]
         mov r11, [rsp+16]
         
@@ -92,9 +93,15 @@ formula_int:
         ; d = g/2
         mov rcx, r10 ; get g
         sar ecx, 1 ; d = d/2
-        sar r11d, 2 ; h = h/4
-        shl r8d, 3 ; e = e*8
-        shl r9d, 2 ; f = f*4
+        mov rdx, r11
+        sar edx, 2 ; h = h/4
+        mov r11, rdx
+        mov rdx, r8
+        shl edx, 3 ; e = e*8
+        mov r8, rdx
+        mov rdx, r9
+        shl edx, 2 ; f = f*4
+        mov r9, rdx
         
         mov rax, r8 ; rax = e
         add rax, r9 ; rax += f
@@ -113,10 +120,71 @@ formula_int:
         
         ret
 
-;shl == sal == shift left
-;sar        == shift right signed
-;shr        == shift right unsigned
 
-;1111 1111
-;shr 1111 1111  1 == 01111111
-;sar 1111 1111  1 == 1111 1111
+
+
+; int32_t  formula_int(int32_t a, int32_t b, int32_t c, int32_t d,
+;                      int32_t e, int32_t f, int32_t g, int32_t h)
+;
+; rdi = a
+; rsi = b
+; rdx = c
+; rcx = d
+; r8  = e
+; r9  = f
+; r10 = g
+; r11 = h
+formula_int:
+        mov r10, [rsp+8]
+        mov r11, [rsp+16]
+        push r12
+        
+        add rdi, rsi ; a=a+b
+        sub rdx, rcx ; c=c-d
+        mov rsi, rdx ; b = c
+
+        ; d = g/2
+        mov rax, r10 ; get g
+        xor rdx, rdx ; rdx = 0
+        mov r12, 2
+        idiv r12     ; rdx:rax = rax/2
+        mov rcx, rax ; d = g/2
+        ; rest is in rdx
+
+        ; h = h/4
+        mov rax, r11 ; get h
+        xor rdx, rdx ; rdx = 0
+        mov r12, 4
+        idiv r12     ; rax = rax/4
+        mov r11, rax ; h = h/4
+        ; rest is in rdx
+
+        ; e = e*8
+        mov rax, r8 ; get e
+        mov r12, 8
+        imul r12     ; rax = rax*8
+        mov r8, rax ; e = rax
+
+        ; f = f*4
+        mov rax, r9 ; get f
+        mov r12, 4
+        imul r12     ; rax = rax*4
+        mov r9, rax ; f = rax
+        
+        mov rax, r8 ; rax = e
+        add rax, r9 ; rax += f
+        sub rax, rcx ; rax -= g
+        add rax, r11 ; rax += h
+        
+        imul rdi ; rax *= a
+        xor rdx,rdx
+        imul rsi ; rax *= c
+        
+        ; rax /= 3
+        xor rdx, rdx
+        mov r12, 3
+        idiv r12
+        xor rdx, rdx
+        pop r12
+        
+        ret

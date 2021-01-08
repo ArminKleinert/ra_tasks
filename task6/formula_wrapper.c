@@ -5,22 +5,10 @@
 extern int32_t formula_int(
     int32_t, int32_t, int32_t, int32_t, int32_t, int32_t,
     int32_t, int32_t);
-extern int32_t formula_int_shift(
-    int32_t, int32_t, int32_t, int32_t, int32_t, int32_t,
-    int32_t, int32_t);
 extern double formula_flt(
     double, double, double, double, double, double,
     double, double);
 
-
-/*
-static int32_t formula_int(int32_t a, int32_t b, int32_t c, int32_t d, int32_t e,
-                         int32_t f, int32_t g, int32_t h)
-{
-	return (((a + b) * (c - d)) * ((e * 8) + (f * 4) - (g / 2) + (h / 4))) /
-	       3;
-}
-*/
 
 static double check_flt(double a, double b, double c, double d, double e,
                         double f, double g, double h)
@@ -110,7 +98,7 @@ int main(int argc, char *argv[])
 	double chk_flt = check_flt(a, b, c, d, e, f, g, h);
 	int32_t res_int = formula_int(
     a_int, b_int, c_int, d_int, e_int, f_int,g_int, h_int);
-	int32_t res_int_shift = formula_int_shift(
+	int32_t res_int_shift = formula_int(
     a_int, b_int, c_int, d_int, e_int, f_int, g_int, h_int);
 	int32_t chk_int = check_int(
     a_int, b_int, c_int, d_int, e_int, f_int,g_int, h_int);
@@ -121,8 +109,8 @@ int main(int argc, char *argv[])
 	       "%lf [%lf]\n", a, b, c, d, e, f, g, h, res_flt, chk_flt);
 	printf("Erg:  formula_int(%" PRId32 ", %" PRId32 ", %" PRId32 ", "
 	       "%" PRId32 ", %" PRId32 ", %" PRId32 ", %" PRId32 ", "
-	       "%" PRId32 ") = Normal: %"  PRId32  " Shift: %" PRId32 " [%" PRId32 ", shift: %" PRId32 "]\n",
-	       a_int, b_int, c_int, d_int, e_int, f_int, g_int, h_int, res_int, res_int_shift,
+	       "%" PRId32 ") = %"  PRId32  " [%" PRId32 ", shift: %" PRId32 "]\n",
+	       a_int, b_int, c_int, d_int, e_int, f_int, g_int, h_int, res_int, 
 	       chk_int, chk_int_shift);
 
 	return EXIT_SUCCESS;
