@@ -35,6 +35,7 @@ SECTION .text
 
 global formula_flt
 global formula_int
+global formula_int_shift
 
 ; double check_flt(double a, double b, double c, double d,
 ;                  double e, double f, double g, double h)
@@ -69,7 +70,13 @@ formula_flt:
         divsd xmm0, [rel LC3] ; a /= 3
         ret
 
+;shl == sal == shift left
+;sar        == shift right signed
+;shr        == shift right unsigned
 
+;1111 1111
+;shr 1111 1111  1 == 0111 1111
+;sar 1111 1111  1 == 1011 1111
 
 ; int32_t  formula_int(int32_t a, int32_t b, int32_t c, int32_t d,
 ;                      int32_t e, int32_t f, int32_t g, int32_t h)
@@ -82,21 +89,27 @@ formula_flt:
 ; r9  = f (f*4)
 ; r10 = g
 ; r11 = h (h/4)
-; r12 = intermediate for g/2, h/4, e*8 and f*4
-formula_int:
+formula_int_shift:
         mov r10, [rsp+8]
         mov r11, [rsp+16]
         
         add rdi, rsi ; a=a+b
         sub rdx, rcx ; c=c-d
         mov rsi, rdx ; b = c
+        xor rdx,rdx
 
         ; d = g/2
         mov rcx, r10 ; get g
-        shr rcx, 1 ; d = d/2
-        shr r11, 2 ; h = h/4
-        shl r8, 3 ; e = e*8
-        shl r9, 2 ; f = f*4
+        sar ecx, 1 ; d = d/2
+        mov rdx, r11
+        sar edx, 2 ; h = h/4
+        mov r11, rdx
+        mov rdx, r8
+        shl edx, 3 ; e = e*8
+        mov r8, rdx
+        mov rdx, r9
+        shl edx, 2 ; f = f*4
+        mov r9, rdx
         
         mov rax, r8 ; rax = e
         add rax, r9 ; rax += f
@@ -129,7 +142,7 @@ formula_int:
 ; r9  = f
 ; r10 = g
 ; r11 = h
-formula_int_old:
+formula_int:
         mov r10, [rsp+8]
         mov r11, [rsp+16]
         push r12
@@ -155,17 +168,13 @@ formula_int_old:
         ; rest is in rdx
 
         ; e = e*8
-        xor rdx, rdx ; rdx = 0
         mov rax, r8 ; get e
-        xor rdx, rdx ; rdx = 0
         mov r12, 8
         imul r12     ; rax = rax*8
         mov r8, rax ; e = rax
 
         ; f = f*4
-        xor rdx, rdx ; rdx = 0
         mov rax, r9 ; get f
-        xor rdx, rdx ; rdx = 0
         mov r12, 4
         imul r12     ; rax = rax*4
         mov r9, rax ; f = rax
@@ -187,4 +196,3 @@ formula_int_old:
         pop r12
         
         ret
-
