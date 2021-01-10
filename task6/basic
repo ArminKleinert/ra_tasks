@@ -1,0 +1,32 @@
+add r0, r1, r2      IF  ID  OF  EX  WB 
+                        NOP NOP NOP NOP NOP
+                            NOP NOP NOP NOP NOP
+sub r1, r5, r0                  If  ID  OF  EX  WB
+mov [rsp+8], r5                     IF  ID  OF  EX  WB
+or  r0, r5, r4                          IF  ID  OF  EX  WB
+mov r3, [rsp+24]                            IF  ID  OF  EX  WB
+                                                NOP NOP NOP NOP NOP
+                                                    NOP NOP NOP NOP NOP
+and r1, r0, r3                                          IF  ID  OF  EX  WB
+add r0, r1, r3                                              IF  ID  OF  EX  WB
+                                                                NOP NOP NOP NOP NOP
+                                                                    NOP NOP NOP NOP NOP
+add r0, r0, 0x341D                                                      IF  ID  OF  EX  WB
+                                                                            NOP NOP NOP NOP NOP
+                                                                                NOP NOP NOP NOP NOP
+add r0, r0, 0x52F6                                                                  IF  ID  OF  EX  WB
+
+
+
+
+
+add r0, r1, r2      IF  ID  OF  EX  WB
+mov [rsp+8], r5         IF  ID  OF  EX  WB
+mov r3, [rsp+24]            IF  ID  OF  EX  WB
+sub r1, r5, r0                  IF  ID  OF  EX  WB
+or  r0, r5, r4                      IF  ID  OF  EX  WB
+and r1, r0, r3                          IF  ID          OF  EX  WB
+add r0, r1, r3                              IF  ID                  OF  EX  WB
+add r0, r0, 0x341D                              IF  ID                          OF  EX  WB
+add r0, r0, 0x52F6                                  IF  ID                                  OF  EX  WB
+
