@@ -87,18 +87,16 @@ formula_int:
         add rdi, rsi ; a=a+b
         sub rdx, rcx ; c=c-d
         mov rsi, rdx ; b = c
-        xor rdx,rdx
 
         ; d = g/2
-        mov rcx, r10 ; get g
-        sar ecx, 1 ; d = d/2
+        sar r10d, 1 ; d = d/2
         sar r11d, 2 ; h = h/4
         shl r8d, 3 ; e = e*8
         shl r9d, 2 ; f = f*4
         
         mov rax, r8 ; rax = e
         add rax, r9 ; rax += f
-        sub rax, rcx ; rax -= g
+        sub rax, r10 ; rax -= g
         add rax, r11 ; rax += h
         
         imul rdi ; rax *= a
@@ -109,7 +107,6 @@ formula_int:
         xor rdx, rdx
         mov r8, 3
         idiv r8
-        xor rdx, rdx
         
         ret
 
