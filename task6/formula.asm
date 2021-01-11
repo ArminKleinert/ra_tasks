@@ -1,119 +1,166 @@
 ; Abgabe von: Ruth Höner zu Siederdissen und Armin Kleinert
 
+global formula_int_old	; without shift
+global formula_int	; with shift
+global formula_flt
 
-;formula(a, b, c, d, e, f, g, h) {
-;  a = a + b;
-;  c = c - d;
-;  e = e * 8;
-;  f = f * 4;
-;  g = g / 2;
-;  h = h / 4;
-;  
-;  e = e + f;
-;  e = e - g;
-;  e = e + h;
-;  
-;  a = a * c;
-;  a = a * e;
-;  
-;  a = a / 3;
-;	return a;
-;}
-
+; Formel: (((a+b)*(c-d))*(e*8+f*4-g/2+h/4))/3
 
 SECTION .data
-
-LC0: DQ 8.0
-LC1: DQ 4.0
-LC2: DQ 0.5
-LC3: DQ 3.0
-LC4: DQ 0.25
-
-
+eight: dq 8.0
+four: dq 4.0
+two: dq 2.0
+three: dq 3.0
 
 SECTION .text
 
-global formula_flt
-global formula_int
+; params:
+; a = edi
+; b = esi
+; c = edx
+; d = ecx
+; e = r8d
+; f = r9d
+; g = stack => r10d
+; h = stack => r11d
 
-; double check_flt(double a, double b, double c, double d,
-;                  double e, double f, double g, double h)
-;
-; xmm0 = a (a+b; a*c; a*e)
-; xmm1 = b 
-; xmm2 = c (c-d)
-; xmm3 = d
-; xmm4 = e (e*8; e+f; f-g; e+h)
-; xmm5 = f (f*4)
-; xmm6 = g (g/2)
-; xmm7 = h (h/4)
-;
-; Uses floating-point multiplication instead of division because
-; it is (presumably) much faster. (eg. (g*0.5) instead of (g/2))
-formula_flt:
-        addsd xmm0, xmm1 ; a += b
-        subsd xmm2, xmm3 ; c -= d
-        
-        mulsd xmm4, [rel LC0] ; e *= 8
-        mulsd xmm5, [rel LC1] ; f *= 4
-        mulsd xmm6, [rel LC2] ; g /= 2
-        mulsd xmm7, [rel LC4] ; h /= 4
-        
-        addsd xmm4, xmm5 ; e += f
-        subsd xmm4, xmm6 ; e -= g
-        addsd xmm4, xmm7 ; e += h
-        
-        mulsd xmm0, xmm2 ; a *= c
-        mulsd xmm0, xmm4 ; a *= e
-        
-        divsd xmm0, [rel LC3] ; a /= 3
-        ret
+; register use:
+; edi = (a+b)
+; ecx = (c-d)
+; r8d = (e*8)
+; r9d = (f*4)
+; r10d = (g/2)
+; r11d = (h/4)
+; esi = single values for imul/idiv
 
-; int32_t  formula_int(int32_t a, int32_t b, int32_t c, int32_t d,
-;                      int32_t e, int32_t f, int32_t g, int32_t h)
-;
-; rdi = a (a+b)
-; rsi = b (c-d)
-; rdx = c 
-; rcx = d (g/2)
-; r8  = e (e*8)
-; r9  = f (f*4)
-; r10 = g
-; r11 = h (h/4)
-formula_int:
-        mov r10, [rsp+8]
-        mov r11, [rsp+16]
-        
-        add rdi, rsi ; a=a+b
-        sub rdx, rcx ; c=c-d
-        mov rsi, rdx ; b = c
+; integer calculation
 
-        ; d = g/2
-        sar r10d, 1 ; d = d/2
-        sar r11d, 2 ; h = h/4
-        shl r8d, 3 ; e = e*8
-        shl r9d, 2 ; f = f*4
-        
-        mov rax, r8 ; rax = e
-        add rax, r9 ; rax += f
-        sub rax, r10 ; rax -= g
-        add rax, r11 ; rax += h
-        
-        imul rdi ; rax *= a
-        xor rdx,rdx
-        imul rsi ; rax *= c
-        
-        ; rax /= 3
-        xor rdx, rdx
-        mov r8, 3
-        idiv r8
-        
-        ret
+formula_int_old:; get the 7th and 8th argument
+		mov r10d, [rsp+8]
+		mov r11d, [rsp+16]
 
-;shl == sal == shift left
-;sar        == shift right signed
-;shr        == shift right unsigned
+		add edi, esi 	; edi = (a+b)
+		sub edx, ecx	; edx = (c-d)
+		mov ecx, edx	; ecx = (c-d)
 
-;1111 1111
-;shr 1111 1111  1 == 01111111
-;sar 1111 1111  1 == 1111 1111
+		mov eax, r8d	; eax = e
+		mov esi, 8
+		imul esi	; eax = (e*8)
+		mov r8d, eax	; r8d = (e*8)
+
+		mov eax, r9d	; eax = f
+		mov esi, 4
+		imul esi	; eax = (f*4)
+		mov r9d, eax	; r9d = (f*4)
+
+		mov eax, r10d	; eax = g
+
+		test eax, eax
+		js .signed1
+
+		XOR edx, edx	; edx all 0 if unsigned
+		jmp .div1	; edx all 1 if signed
+
+.signed1:	mov edx, -1
+
+.div1:		mov esi, 2
+		idiv esi	; eax = (g/2)
+		mov r10d, eax	; r10d = (g/2)
+
+		mov eax, r11d	; eax = h
+
+		test eax, eax
+		js .signed2
+
+		XOR edx, edx	; edx all 0 if unsigned
+		jmp .div2
+
+.signed2:	mov edx, -1	; edx all 1 if signed
+
+.div2:		mov esi, 4
+		idiv esi	; eax = (h/4)
+		mov r11d, eax	; r11d = (h/4)
+
+		mov eax, r8d	; eax = (e*8)
+		add eax, r9d	; eax = (e*8) + (f*4)
+		sub eax, r10d	; eax = (e*8) + (f*4) - (g/2)
+		add eax, r11d	; eax = (e*8) + (f*4) - (g/2) + (h/4)
+
+		imul edi	; eax = eax * (a+b)
+		imul ecx	; eax = eax * (c-d)
+
+		mov esi, 3
+		idiv esi	; eax = eax / 3
+
+		ret
+
+; integer calculation with shift
+
+formula_int:	; get the 7th and 8th argument
+		mov r10d, [rsp+8]
+		mov r11d, [rsp+16]
+
+		add edi, esi 	; rdi = (a+b)
+		sub edx, ecx	; rdx = (c-d)
+		mov ecx, edx	; rcx = (c-d)
+
+		shl r8d, 3	; shift left 3 times = (e*8)
+
+		shl r9d, 2	; shift left 2 times = (f*4)
+
+		sar r10d, 1	; shift right 1 time = (g/2)
+
+		sar r11d, 2	; shift right 2 times = (h/4)
+
+		mov eax, r8d	; rax = (e*8)
+		add eax, r9d	; rax = (e*8) + (f*4)
+		sub eax, r10d	; rax = (e*8) + (f*4) - (g/2)
+		add eax, r11d	; rax = (e*8) + (f*4) - (g/2) + (h/4)
+
+		imul edi	; rax = rax * (a+b)
+		imul ecx	; rax = rax * (c-d)
+
+		mov esi, 3
+		idiv esi	; rax = rax / 3
+
+		ret
+
+; Floating Point calculation
+
+; params:
+; a = xmm0
+; b = xmm1
+; c = xmm2
+; d = xmm3
+; e = xmm4
+; f = xmm5
+; g = xmm6
+; h = xmm7
+
+; register use
+; xmm1 = (a+b)
+; xmm2 = (c-d)
+; xmm4 = (e*8)
+; xmm5 = (f*4)
+; xmm6 = (g/2)
+; xmm7 = (h/4)
+
+formula_flt:	addsd xmm1, xmm0	; xmm1 = (a+b)
+		subsd xmm2, xmm3	; xmm2 = (c-d)
+
+		mulsd xmm4, [rel eight]	; xmm4 = (e*8)
+		mulsd xmm5, [rel four]	; xmm5 = (f*4)
+		divsd xmm6, [rel two]	; xmm6 = (g/2)
+		divsd xmm7, [rel four]	; xmm7 = (h/4)
+
+		movsd xmm0, xmm4	; xmm0 = (e*8)
+		addsd xmm0, xmm5	; xmm0 = (e*8)+(f*4)
+		subsd xmm0, xmm6	; xmm0 = (e*8)+(f*4)-(g/2)
+		addsd xmm0, xmm7	; xmm0 = (e*8)+(f*4)-(g/2)+(h/4)
+
+		mulsd xmm0, xmm1	; xmm0 = xmm0 * (a+b)
+		mulsd xmm0, xmm2	; xmm0 = xmm0 * (c-d)
+
+		divsd xmm0, [rel three]	; xmm0 = xmm0/3
+
+		ret
