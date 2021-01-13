@@ -33,7 +33,7 @@ SECTION .text
 ; r11d = (h/4)
 ; esi = single values for imul/idiv
 
-; integer calculation
+; integer calculation (funktioniert auch!)
 
 formula_int_old:; get the 7th and 8th argument
 		mov r10d, [rsp+8]
@@ -58,7 +58,7 @@ formula_int_old:; get the 7th and 8th argument
 		test eax, eax
 		js .signed1
 
-		XOR edx, edx	; edx all 0 if unsigned
+		xor edx, edx	; edx all 0 if unsigned
 		jmp .div1	; edx all 1 if signed
 
 .signed1:	mov edx, -1
@@ -72,7 +72,7 @@ formula_int_old:; get the 7th and 8th argument
 		test eax, eax
 		js .signed2
 
-		XOR edx, edx	; edx all 0 if unsigned
+		xor edx, edx	; edx all 0 if unsigned
 		jmp .div2
 
 .signed2:	mov edx, -1	; edx all 1 if signed
@@ -89,10 +89,19 @@ formula_int_old:; get the 7th and 8th argument
 		imul edi	; eax = eax * (a+b)
 		imul ecx	; eax = eax * (c-d)
 
-		mov esi, 3
-		idiv esi	; eax = eax / 3
+    test eax, eax
+    js .signed3
+    
+    XOR edx, edx    ; edx all 0 if unsigned
+    jmp .div3
+    
+.signed3:
+    mov edx, -1; edx all 1 if signed
+.div3:
+    mov esi, 3
+    idiv esi    ; eax = eax / 3
 
-		ret
+    ret
 
 ; integer calculation with shift
 
@@ -120,6 +129,7 @@ formula_int:	; get the 7th and 8th argument
 		imul edi	; rax = rax * (a+b)
 		imul ecx	; rax = rax * (c-d)
 
+		cdq
 		mov esi, 3
 		idiv esi	; rax = rax / 3
 

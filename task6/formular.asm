@@ -80,7 +80,7 @@ formula_flt:
 ; r9  = f (f*4)
 ; r10 = g
 ; r11 = h (h/4)
-formula_int:
+formula_int_shift:
         mov r10, [rsp+8]
         mov r11, [rsp+16]
         
@@ -117,3 +117,127 @@ formula_int:
 ;1111 1111
 ;shr 1111 1111  1 == 01111111
 ;sar 1111 1111  1 == 1111 1111
+
+
+; int32_t  formula_int(int32_t a, int32_t b, int32_t c, int32_t d,
+;                      int32_t e, int32_t f, int32_t g, int32_t h)
+;
+; rdi = a (a+b)
+; rsi = b (c-d)
+; rdx = c 
+; rcx = d (g/2)
+; r8  = e (e*8)
+; r9  = f (f*4)
+; r10 = g
+; r11 = h (h/4)
+; r12 = c
+formula_int_old:
+        mov r10, [rsp+8]
+        mov r11, [rsp+16]
+        
+        add edi, esi ; a=a+b
+        sub edx, ecx ; c=c-d
+        mov esi, edx ; b = c
+        
+        ; d = d/2
+        mov eax, r10d
+        cdq
+        mov r10d, 2
+        idiv r10d
+        mov r10d, eax
+        
+        ; h = h/4
+        mov eax, r11d
+        cdq
+        mov r11d, 4
+        idiv r11d
+        mov r11d, eax
+        
+        imul r8d, r8d, 8 ; e = e*8
+        imul r9d, r9d, 4 ; f = f*4
+        
+        mov eax, r8d ; rax = e
+        add eax, r9d ; rax += f
+        sub eax, r10d ; rax -= g
+        add eax, r11d ; rax += h
+        
+        imul edi ; rax *= a
+        imul esi ; rax *= c
+        
+        ; rax /= 3
+        cdq
+        mov r8d, 3
+        idiv r8d
+        
+        ret
+
+
+
+
+formula_int:; get the 7th and 8th argument
+		mov r10d, [rsp+8]
+		mov r11d, [rsp+16]
+
+		add edi, esi 	; edi = (a+b)
+		sub edx, ecx	; edx = (c-d)
+		mov ecx, edx	; ecx = (c-d)
+
+		mov eax, r8d	; eax = e
+		mov esi, 8
+		imul esi	; eax = (e*8)
+		mov r8d, eax	; r8d = (e*8)
+
+		mov eax, r9d	; eax = f
+		mov esi, 4
+		imul esi	; eax = (f*4)
+		mov r9d, eax	; r9d = (f*4)
+
+		mov eax, r10d	; eax = g
+
+		test eax, eax
+		js .signed1
+
+		XOR edx, edx	; edx all 0 if unsigned
+		jmp .div1	; edx all 1 if signed
+
+.signed1:	mov edx, -1
+
+.div1:		mov esi, 2
+		idiv esi	; eax = (g/2)
+		mov r10d, eax	; r10d = (g/2)
+
+		mov eax, r11d	; eax = h
+
+		test eax, eax
+		js .signed2
+
+		XOR edx, edx	; edx all 0 if unsigned
+		jmp .div2
+
+.signed2:	mov edx, -1	; edx all 1 if signed
+
+.div2:		mov esi, 4
+		idiv esi	; eax = (h/4)
+		mov r11d, eax	; r11d = (h/4)
+
+		mov eax, r8d	; eax = (e*8)
+		add eax, r9d	; eax = (e*8) + (f*4)
+		sub eax, r10d	; eax = (e*8) + (f*4) - (g/2)
+		add eax, r11d	; eax = (e*8) + (f*4) - (g/2) + (h/4)
+
+		imul edi	; eax = eax * (a+b)
+		imul ecx	; eax = eax * (c-d)
+
+		test eax, eax
+		js .signed3
+		
+		xor edx, edx	; edx all 0 if unsigned
+		jmp .div3
+		
+.signed3:
+    mov edx, -1
+.div3:
+		mov esi, 3
+		idiv esi	; eax = eax / 3
+
+		ret

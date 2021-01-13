@@ -96,10 +96,8 @@ int main(int argc, char *argv[])
 	        f_int = f, g_int = g, h_int = h;
 	double res_flt = formula_flt(a, b, c, d, e, f, g, h);
 	double chk_flt = check_flt(a, b, c, d, e, f, g, h);
-	int32_t res_int = formula_int(
-    a_int, b_int, c_int, d_int, e_int, f_int,g_int, h_int);
-	int32_t res_int_shift = formula_int(
-    a_int, b_int, c_int, d_int, e_int, f_int, g_int, h_int);
+	int32_t res_int = formula_int(    a_int, b_int, c_int, d_int, e_int, f_int,g_int, h_int);
+	int32_t res_int_shift = formula_int(    a_int, b_int, c_int, d_int, e_int, f_int, g_int, h_int);
 	int32_t chk_int = check_int(
     a_int, b_int, c_int, d_int, e_int, f_int,g_int, h_int);
 	int32_t chk_int_shift = check_int_shift(
