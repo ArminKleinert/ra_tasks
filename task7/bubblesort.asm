@@ -1,53 +1,42 @@
-; Abgabe von: Ruth Höner zu Siederdissen und Armin Kleinert
-
-
-
-SECTION .text
+; Abgabe von Ruth Höner zu Siederdissen und Armin Kleinert
 
 global sort
 
-; rdi = len
-; rsi = arraay
-; r8 = i
-; r9 = j
-; r10, rcx,  = intermediate
+; Params:
+; rdi = length
+; rsi = array_start
+
+; Register use:
+; rdi = i
+; rcx = j
+; rdx = i-1
+; r8 = A[j+1]
+; r9 = A[j]
+
 sort:
-	mov r8, rdi ; i = len
-	;mov r9, 0 ; j = 0
-	mov r11, 8
 
-.for_head:
-	mov r9, 0   ; j=0
-	dec r8      ; i-=1	
-	cmp r8, 0   ; if i == 0 jump to result
-	je result
+.outer:		cmp rdi, 1	; i > 1 ?
+          jbe .end
 
-.for_inner:
-	cmp r9, r8  ; i == j => Return to outer loop
-	je .for_head
-	mov rax, r9
-	mul r11
-	mov r10, [rsi+rax] ;r10=A[j]
-	inc r9 ;j += 1
-	mov rax, r9
-	mul r11
-	mov rcx, [rsi+rax]	;rcx = A[j+1]
-	cmp r10, rcx		
-	jl .for_inner		; No switch
+          mov rcx, 0	; j = 0
+          mov rdx, rdi	; r9 = i
+          dec rdx		; r9 = i-1
 
-	; Do the switch
-	dec r9
-	mov rdi, r10		;tmp=A[j]	
-	mov rax, r9
-	mul r11
-	mov [rsi+rax], rcx	;A[j]=A[j+1]
-	inc r9
-	mov rax, r9
-	mul r11
-	mov [rsi+rax], rdi
-	
-	jmp .for_inner
+.inner:		cmp rcx, rdx	; j < i-1 ?
+          jae .end_inner
 
-result:
-	ret
+.if:		  mov r8, [rsi+(rcx+1)*8]		; rdx = A[j+1]
+          cmp [rsi+rcx*8], r8		; A[j] > A[j+1] ?
+          jbe .end_if
 
+          mov r9, [rsi+rcx*8]		; r8 = A[j]
+          mov [rsi+rcx*8], r8		; A[j] = A[j+1]
+          mov [rsi+(rcx+1)*8], r9		; A[j+1] = r8
+
+.end_if:	inc rcx		; j++
+          jmp .inner
+
+.end_inner:	dec rdi		; i--
+          jmp .outer
+
+.end:		  ret

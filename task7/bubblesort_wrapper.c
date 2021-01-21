@@ -7,7 +7,7 @@
 
 #define BOUND 100
 
-extern uint64_t sort(uint64_t len, int64_t a[len]);
+extern void sort(uint64_t len, int64_t a[len]);
 
 static inline void printArray(int64_t *to_show, uint64_t len)
 {
@@ -59,7 +59,6 @@ int main(int argc, char *argv[])
 	}
 
 	printArray(to_sort, len);
-	uint64_t res = sort(len, to_sort);
+	sort(len, to_sort);
 	printArray(to_sort, len);
-  printf("\n%ld\n", res);
 }

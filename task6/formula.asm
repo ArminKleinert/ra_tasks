@@ -129,7 +129,7 @@ formula_int:	; get the 7th and 8th argument
 		imul edi	; rax = rax * (a+b)
 		imul ecx	; rax = rax * (c-d)
 
-		cdq
+  	cdq
 		mov esi, 3
 		idiv esi	; rax = rax / 3
 
