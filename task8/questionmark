@@ -1,23 +1,12 @@
-1 F D O X X X X W (Egal)
-2   F D O L W (Egal)
-3     F D O S S S S S W (Egal)
-4       F D O A A A W (Egal)
-5         F D O L W (Egal)
-6           F D O A A A W (Egal)
-7             F D O A A A W (Egal)
-8               F D O L W
-9                 F D     O M M M M M M M M M M W
-
 2.
-Mit einer normalen, 5 stufigen Pipeline benötigt der Prozess 24 Takte, wobei die meiste Zeit Befehl 8 abwartet:
-- 1-7   : 8 wartet
-- 8     : 8 startet IF
-- 9-12  : 8 führt ID, OF, EX und WB aus, 9 führt parallel IF und ID aus und wartet
-- 13-24 : 9 führt OF aus, Multiplikation für 10 Takte, Write Back
+Die Superskalare Pipeline brauchte 14 Takte, um die Folge abzuarbeiten, wenn man zählt, bis die 9 die Write Back Phase verlassen hat. Ansonsten sind es 13 Takte.
+Die skalare Pipeline braucht 35 Takte.
+Dabei gehen wir davon aus, dass extra Takte eingefüllt werden müssen, damit das Operand Fetch des nächsten Befehls die Ergebnisse der Write Back Phase des vorherigen Befehls lesen kann, falls eine Abhängigkeit besteht.
+Das betrifft folgende Abhängigkeiten: 3 von 2, 6 von 5 und 9 von 8
 
-Die Superscalare Pipeline brauchte 14 Takte.
+26 (EX addiert) + 3 (IF ID OF für 1.) + 6 (3 wartet auf 2, 6. auf 5. und 9. auf 8) = 35 Takte
 
 3.
-Befehl 9 (Multiplikation) braucht am Längsten und zögert den Abschluss des Codes hinaus. Die Befehle 8 und 9 sind unabhängig von den anderen. Sie nach vorne zu verschieben, könnte ein paar Takte sparen.
-Die Einheiten für Instruction Fetch und Instruction Decode zu verbreitern würde es erlauben, mehr Befehle gleichzeitig zu laden (bringt aber tatsächlich nur etwas, wenn der Platz in IWIN ausreicht)
-Die Befehle 2, 5 und 8 müssen auf einander warten, da es nur eine LU gibt. Eine weitere LU wäre praktisch.
+Eine mögliche Optimierung wäre der Einsatz von Forwarding um die Probleme mit den oben gezeigten Abhängigkeiten zu minimieren.
+Durch andere Anorderung der Befehle könnte man die Pipeline besser nutzen und die Abarbeitungszeit verkürzen.
+ - Beispiel: Befehl 9 (Multiplikation) braucht am Längsten und zögert den Abschluss des Codes hinaus. Die Befehle 8 und 9 sind unabhängig von den anderen.

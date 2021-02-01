@@ -1,0 +1,20 @@
+1. Erklären Sie den Unterschied zwischen Interrupts und Polling.
+
+2. Welche Varianten beim Interruptpolling gibt es?
+
+3. Erklären Sie kurz „IVT“ und „ISR“:
+•Was sind „IVT“ und „ISR“?
+•Was steht jeweils drin?
+•Wer legt sie an?
+
+4. Kann eine Interruptbehandlung von einem neuen Interrupt unterbrochen werden?
+
+5. Zeichnen Sie eine Daisychain mit 5 I/O-Geräten.
+
+6. Warum sind Daisy-Chains sinnvoll?
+
+7.Beschreiben Sie den Ablauf einer Interrupt-Behandlung nach dem Daisy-Chain-Verfahren.
+
+8. Sind Daisy-Chains fair?
+
+
