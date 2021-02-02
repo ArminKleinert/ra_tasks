@@ -2,10 +2,18 @@
 - Wieso MIPS-Macros statt NASM-Macros?
 - Dürfen wir in späteren Aufgaben Macros nutzen?
 - Reicht es, zu sagen, dass es zwischen der Umwandlung von Text zu Tokens im Translator und dem Umwandeln zu ISA (Instruction Set Architecture) Instruktionen passiert? Also wie beim C-Präprozessor? Es ist schwer, zum genauen Zeitverlauf was zu finden.
-- Sowohl bei RISC als auch bei CISC kommt es doch einfach auf den Assembler an (Also NASM zB. hat für jede Architektur Macros, die wahrscheinlich auch zur selben Zeit umgewandelt werden.
+- Sowohl bei RISC als auch bei CISC kommt es doch einfach auf den Assembler an (Also NASM zB. hat für jede Architektur Macros, die wahrscheinlich auch zur selben Zeit umgewandelt werden.)
 - Was für Instruktionen sind eigentlich mit den Instruktionen in der ISA gemeint? Arithmetik und Mov für unterschiedliche Größen?
 
 CISC Vorteile:
 - Weniger Befehle laufen über den Bus
 
 - CISC hat 2 Versschiedene Macro-Arten: Normale und Microprogramme
+
+Macros werden vom Compiler ersetzt, nachdem der Sourcecode in Tokens unterteilt wurde. 
+In CISC-Architekturen werden Macros zur selben Zeit übersetzt. 
+Viele CISC-Architekturen haben zudem Microprogramme, die während der Laufzeit übersetzt werden. Microprogramme sind hardwarenäher und -orientierter als normale Assembly-Befehle.
+Auch Microprogramme kommen auch in RISC-Architekturen vor, werden aber üblicherweise mit CISC-Architekturen assoziiert.
+
+https://binaryterms.com/cisc-processors.html
+https://www.quora.com/Computer-Architecture-Does-only-CISC-instruction-set-system-have-microprogram
