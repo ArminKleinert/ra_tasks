@@ -1,83 +1,6 @@
 ; Abgabe von Ruth Höner zu Siederdissen und Armin Kleinert
 
 global sort
-global foo
-
-foo:
-  mov rax, 0
-  imul rdi, rdi, 2
-  ret
-  
-; for (i = len(A); i > 1; i--) {
-;   for (j = 0; j < i-1; j++) {
-;     if (compar((A+j), (A+j+1)) > 1) {
-;       // Swap  entry j and j+1
-;       tmp = A[j];
-;       A[j] = A[j+1];
-;       A[j+1] = tmp;
-;     }
-;   }
-; }
-
-; i = length
-; outer:
-; if (i <= 1) jmp end;
-; i--;
-; 
-; j = 0;
-;
-; inner:
-; temp = i-1;
-; if (j >= temp) jmp outer;
-; j++;
-;
-; rdi = A+j
-; rsi = A+j+1
-; rdx = 0
-; temp = compar();
-; if (temp <= 1) jmp inner;
-;
-; temp = A[j]
-; temp2 = A[j+1]
-; A[j] = temp2
-; A[j+1] = temp
-;
-; end:
-; ret
-
-; r8 = length; // i
-; r9 = 0; // j
-; r10 = 0; // temp2
-; r12 = A
-; r13 = rdx; // Comparator
-;
-; outer:
-; if (r8 <= 1) jmp end;
-; r8--;
-; 
-; r9 = 0;
-;
-; inner:
-; r10 = i;
-; r10--;
-; if (r9 >= r10) jmp outer;
-; r9++;
-;
-; rdi = r12+r9*8
-; rsi = r12+r9*8+8
-; rdx = 0
-; rax = compar();
-; if (rax <= 1) jmp inner;
-;
-; rax = A[j]
-; r10 = A[j+1]
-; [r12+r9*8] = r10
-; [r12+r9*8+8] = rax
-;
-; end:
-; ret
-
-
 
 ;void sort(void *base, size_t nel,
 ;          int64_t (*compar)(const void *, const void *));
@@ -97,6 +20,8 @@ sort:
           push r9
           push r10
           push r11
+          push r12
+          push r13
           
           mov r8, rsi ; // i
           mov r12, rdi ; A
@@ -125,7 +50,6 @@ sort:
            ; Call comparator
            lea rdi, [r12+r9*8]
            lea rsi, [r12+r9*8+8]
- ;           xor rdx, rdx
  
            push r8
            push r9
@@ -141,13 +65,6 @@ sort:
            ; So no swap if rax <= 0
            cmp rax, 0
            jle .if_end
-
-;           lea rdi, [r12+r9*8]
-;           lea rsi, [r12+r9*8+8]
-;           mov rdi, [rdi]
-;           mov rsi, [rsi]
-;           cmp rdi, rsi
-;           jle .if_end
           
           ; Swap A[j] and A[j+1]
           lea rdi, [r12+r9*8]
@@ -166,6 +83,8 @@ sort:
           jmp .outer
 
 .end:
+          pop r13
+          pop r12
           pop r11
           pop r10
           pop r9
