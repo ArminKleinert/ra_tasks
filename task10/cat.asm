@@ -33,11 +33,12 @@
 
 section .bss
 
-buffer: resb buff_max ; everything after contains the actual code
+buffer: resb buff_max ; Everything after contains the actual code.
 
 
 section .text
 
+; Overview of used system calls.
 ; rax | name      | ret             | rdi    | rsi        | rdx
 ; 0   | sys_read  | size_t nread    | u32 fd | char* buff | size_t count
 ; 1   | sys_write | size_t nwritten | u32 fd | char* buff | size_t count
@@ -45,32 +46,44 @@ section .text
 
 global _start
 
+; Function for writing from buffer to stdout
+; rdi : Number of bytes to write.
 writeAll:
-.wa_start:
-          mov r12, rdi ; Bytes to write
-          mov r13, buffer
+          mov rdx, rdi ; Bytes to write
+          mov rsi, buffer ; Put buffer 
 
-          call_write buffer, r12
+          call_write r13, r12 ; See macro above
 
+          ; Check for error
           cmp rax, 0
           jle .wa_error
 
-          add r13, rax
-          sub r12, rax
+          add r13, rax ; Advance pointer
+          sub r12, rax ; Decrease remaining bytes to write
+          
+          ; Check whether or not we are done
           cmp rax, r12
           jl writeAll
 .wa_error:
+          ; Either we have an error or everything was printed
           ret
 
+; Function for reading from stdin.
 fromStdin:
+          ; See macro above
           call_read buffer, buff_max
 
+          ; Check for error or no input.
+          cmp rax, 0
+          jle .ra_error
+          
+          ; Write bytes.
           mov rdi, rax
           call writeAll
-          
-          cmp rax, 0
-          je .ra_error
-          
+
+          ; Go to beginning.
+          ; This automatically covers the case that more bytes
+          ; were pushed to input than what could be read.
           jmp fromStdin
 .ra_error:
           ret
