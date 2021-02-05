@@ -45,10 +45,6 @@ section .text
 
 global _start
 
-; PROGRAMM IST FALSCH
-; read und write müssen direkt aufeinander folgen! (Für den Fall, dass mehr
-; Input kommt als der Buffer aufnehmen kann.)
-
 writeAll:
 .wa_start:
           mov r12, rdi ; Bytes to write
@@ -71,6 +67,10 @@ fromStdin:
 
           mov rdi, rax
           call writeAll
+          
+          cmp rax, 0
+          je .ra_error
+          
           jmp fromStdin
 .ra_error:
           ret
@@ -80,15 +80,6 @@ _start:
           mov rax, sys_exit
           mov rdi, 0
           syscall
-
-;loop do
-;stat = readStdin buffer, buff_max
-;
-;break if rax < 0 ; Error
-;break if rax == 0 ; No input
-;
-;writeAll buffer, stat
-;end
 
 
 
