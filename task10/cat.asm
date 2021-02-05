@@ -8,29 +8,6 @@
 
 %define buff_max    1024
 
-; Calls sys_read with stdin and the following arguments:
-; 1. buffer : char*
-; 2. nbytes : number of bytes to read
-%macro call_read 2
-          mov rax, sys_read
-          mov rdi, stdin
-          mov rsi, %1
-          mov rdx, %2
-          syscall
-%endmacro
-
-
-; Calls sys_write with stdout the following arguments:
-; 1. buffer : char*
-; 2. nbytes : number of bytes to write
-%macro call_write 2
-          mov rax, sys_write
-          mov rdi, stdout
-          mov rsi, %1
-          mov rdx, %2
-          syscall
-%endmacro
-
 section .bss
 
 buffer: resb buff_max ; Everything after contains the actual code.
@@ -51,27 +28,34 @@ global _start
 writeAll:
           mov rdx, rdi ; Bytes to write
           mov rsi, buffer ; Put buffer 
-
-          call_write r13, r12 ; See macro above
+          mov rdi, stdout
+.wa_start:
+          ; Write. All parameters except rax were set above
+          mov rax, sys_write
+          syscall
 
           ; Check for error
           cmp rax, 0
           jle .wa_error
 
-          add r13, rax ; Advance pointer
-          sub r12, rax ; Decrease remaining bytes to write
+          add rsi, rax ; Advance pointer
+          sub rdx, rax ; Decrease remaining bytes to write
           
           ; Check whether or not we are done
           cmp rax, r12
-          jl writeAll
+          jl .wa_start
 .wa_error:
           ; Either we have an error or everything was printed
           ret
 
 ; Function for reading from stdin.
 fromStdin:
-          ; See macro above
-          call_read buffer, buff_max
+          ; Prepare system read
+          mov rax, sys_read
+          mov rdi, stdin
+          mov rsi, buffer
+          mov rdx, buff_max
+          syscall
 
           ; Check for error or no input.
           cmp rax, 0
