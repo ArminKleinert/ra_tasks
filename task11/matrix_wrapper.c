@@ -75,27 +75,20 @@ void drawTable(char *name, Measurement *ergs_cols, Measurement *ergs_rows)
 	bool time_size_cols = (ergs_cols->time >= MAX_WIDTH) ? true : false;
 	bool time_size_rows = (ergs_rows->time >= MAX_WIDTH) ? true : false;
 
-	fputs("+-------+---------------+---------------+---------------+\n",
-	      stdout);
 	printf("|"
 	       "%s"
 	       "\t|Erg:\t\t|CPU-Cycles:\t|Time (us):\t|\n",
 	       name);
-	fputs("+-------+---------------+---------------+---------------+\n",
-	      stdout);
 
 	printf("|Cols:\t|%" PRIu64 "\t%s|%ld\t%s|%" PRIu64 "\t%s|\n",
 	       ergs_cols->res, (!res_size_cols) ? "\t" : "", ergs_cols->cycles,
 	       (!cyc_size_cols) ? "\t" : "", ergs_cols->time,
 	       (!time_size_cols) ? "\t" : "");
 
-	printf("|Rows:\t|%" PRIu64 "\t%s|%ld\t%s|%" PRIu64 "\t%s|\n",
+	printf("|Rows:\t|%" PRIu64 "\t%s|%ld\t%s|%" PRIu64 "\t%s|\n\n",
 	       ergs_rows->res, (!res_size_rows) ? "\t" : "", ergs_rows->cycles,
 	       (!cyc_size_rows) ? "\t" : "", ergs_rows->time,
 	       (!time_size_rows) ? "\t" : "");
-
-	fputs("+-------+---------------+---------------+---------------+\n\n",
-	      stdout);
 }
 
 int main(void)
@@ -118,6 +111,33 @@ int main(void)
 	drawTable("C", &erg_cols, &erg_rows);
 
 	// ASM
+	benchmark(asmColAdd, &p, &erg_cols);
+	benchmark(asmRowAdd, &p, &erg_rows);
+	drawTable("ASM", &erg_cols, &erg_rows);
+	benchmark(asmColAdd, &p, &erg_cols);
+	benchmark(asmRowAdd, &p, &erg_rows);
+	drawTable("ASM", &erg_cols, &erg_rows);
+	benchmark(asmColAdd, &p, &erg_cols);
+	benchmark(asmRowAdd, &p, &erg_rows);
+	drawTable("ASM", &erg_cols, &erg_rows);
+	benchmark(asmColAdd, &p, &erg_cols);
+	benchmark(asmRowAdd, &p, &erg_rows);
+	drawTable("ASM", &erg_cols, &erg_rows);
+	benchmark(asmColAdd, &p, &erg_cols);
+	benchmark(asmRowAdd, &p, &erg_rows);
+	drawTable("ASM", &erg_cols, &erg_rows);
+	benchmark(asmColAdd, &p, &erg_cols);
+	benchmark(asmRowAdd, &p, &erg_rows);
+	drawTable("ASM", &erg_cols, &erg_rows);
+	benchmark(asmColAdd, &p, &erg_cols);
+	benchmark(asmRowAdd, &p, &erg_rows);
+	drawTable("ASM", &erg_cols, &erg_rows);
+	benchmark(asmColAdd, &p, &erg_cols);
+	benchmark(asmRowAdd, &p, &erg_rows);
+	drawTable("ASM", &erg_cols, &erg_rows);
+	benchmark(asmColAdd, &p, &erg_cols);
+	benchmark(asmRowAdd, &p, &erg_rows);
+	drawTable("ASM", &erg_cols, &erg_rows);
 	benchmark(asmColAdd, &p, &erg_cols);
 	benchmark(asmRowAdd, &p, &erg_rows);
 	drawTable("ASM", &erg_cols, &erg_rows);
