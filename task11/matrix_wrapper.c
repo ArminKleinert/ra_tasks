@@ -114,33 +114,6 @@ int main(void)
 	benchmark(asmColAdd, &p, &erg_cols);
 	benchmark(asmRowAdd, &p, &erg_rows);
 	drawTable("ASM", &erg_cols, &erg_rows);
-	benchmark(asmColAdd, &p, &erg_cols);
-	benchmark(asmRowAdd, &p, &erg_rows);
-	drawTable("ASM", &erg_cols, &erg_rows);
-	benchmark(asmColAdd, &p, &erg_cols);
-	benchmark(asmRowAdd, &p, &erg_rows);
-	drawTable("ASM", &erg_cols, &erg_rows);
-	benchmark(asmColAdd, &p, &erg_cols);
-	benchmark(asmRowAdd, &p, &erg_rows);
-	drawTable("ASM", &erg_cols, &erg_rows);
-	benchmark(asmColAdd, &p, &erg_cols);
-	benchmark(asmRowAdd, &p, &erg_rows);
-	drawTable("ASM", &erg_cols, &erg_rows);
-	benchmark(asmColAdd, &p, &erg_cols);
-	benchmark(asmRowAdd, &p, &erg_rows);
-	drawTable("ASM", &erg_cols, &erg_rows);
-	benchmark(asmColAdd, &p, &erg_cols);
-	benchmark(asmRowAdd, &p, &erg_rows);
-	drawTable("ASM", &erg_cols, &erg_rows);
-	benchmark(asmColAdd, &p, &erg_cols);
-	benchmark(asmRowAdd, &p, &erg_rows);
-	drawTable("ASM", &erg_cols, &erg_rows);
-	benchmark(asmColAdd, &p, &erg_cols);
-	benchmark(asmRowAdd, &p, &erg_rows);
-	drawTable("ASM", &erg_cols, &erg_rows);
-	benchmark(asmColAdd, &p, &erg_cols);
-	benchmark(asmRowAdd, &p, &erg_rows);
-	drawTable("ASM", &erg_cols, &erg_rows);
 
 	return EXIT_SUCCESS;
 }

@@ -26,6 +26,13 @@ asmColAdd:
         
         mov     r9, rdx
         
+        ; Number of bytes to skip from column to column.
+        ; For the default number of cells per column (512) 
+        ; times 8 (because each cell is 8 bytes in size).
+        ; Or 4096 bytes for short.
+        mov     r10, r9
+        shl     r10, 3
+        
         mov     rdx, rsi
         xor     ecx, ecx
         xor     r8d, r8d
@@ -40,7 +47,7 @@ asmColAdd:
         je      .L6
 .L4:
         add     r8, QWORD [rax]
-        add     rax, 0x1000
+        add     rax, r10 ; Go to next column
         cmp     rax, rdx
         jne     .L4
 .L6:
@@ -76,6 +83,13 @@ asmRowAdd:
         mov     rdi, rsi
         mov     rsi, rdx
         
+        ; Number of bytes to skip from row to row.
+        ; For the default number of cells per row (512) 
+        ; times 8 (because each cell is 8 bytes in size).
+        ; Or 4096 bytes for short.
+        mov     r10, rdi
+        shl     r10, 3
+        
         mov     r9, rsi
         lea     rdx, [rax+rdx*8]
         xor     ecx, ecx
@@ -93,7 +107,7 @@ asmRowAdd:
         jne     .L14
 .L16:
         add     rcx, 1
-        add     rdx, 0x1000
+        add     rdx, r10 ; Go to next row
         cmp     rdi, rcx
         jne     .L13
         mov     rax, r8
