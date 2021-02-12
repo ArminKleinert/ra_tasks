@@ -11,8 +11,6 @@
 #include <unistd.h>
 #include <string.h>
 
-extern uint64_t foo(uint64_t i0);
-
 extern void sort(void *base, size_t nel,
                  int64_t (*compar)(const void *, const void *));
 
@@ -22,7 +20,7 @@ static int64_t int_compar(const void *_a, const void *_b)
         const int64_t *a = _a;
         const int64_t *b = _b;
         int64_t c = (*a - *b);
-	fprintf(stderr, "\"%"PRId64"\" %c \"%"PRId64"\" (%ld)\n", *a, c < 0 ? '<' : '>', *b, c);
+	//fprintf(stderr, "\"%"PRId64"\" %c \"%"PRId64"\" (%ld)\n", *a, c < 0 ? '<' : '>', *b, c);
         return c;
 }
 
@@ -131,6 +129,4 @@ int main(int argc, char *argv[])
 	} else {
 		assert(false);
 	}
-
-	printf("%lu\n", foo(2));
 }

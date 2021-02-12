@@ -13,7 +13,9 @@ CISC Vorteile:
 Macros werden vom Compiler ersetzt, nachdem der Sourcecode in Tokens unterteilt wurde. 
 In CISC-Architekturen werden Macros zur selben Zeit übersetzt. 
 Viele CISC-Architekturen haben zudem Microprogramme, die während der Laufzeit übersetzt werden. Microprogramme sind hardwarenäher und -orientierter als normale Assembly-Befehle.
-Auch Microprogramme kommen auch in RISC-Architekturen vor, werden aber üblicherweise mit CISC-Architekturen assoziiert.
+Microprogramme kommen auch in RISC-Architekturen vor, werden aber üblicherweise mit CISC-Architekturen assoziiert.
 
 https://binaryterms.com/cisc-processors.html
 https://www.quora.com/Computer-Architecture-Does-only-CISC-instruction-set-system-have-microprogram
+https://github.com/netwide-assembler/nasm Im Code kann man nachlesen, wann Macros ausgeführt werden.
+http://what-when-how.com/microcontrollers/macro-assemblers-microcontrollers/

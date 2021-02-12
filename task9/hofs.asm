@@ -1,112 +1,66 @@
-; Abgabe von Ruth Höner zu Siederdissen und Armin Kleinert
+; Abgabe von: Armin Kleinert und Ruth Höner zu Siederdissen
 
 global sort
 
-;void sort(void *base, size_t nel,
-;          int64_t (*compar)(const void *, const void *));
-; rdi = base ptr
-; rsi = length
-; rdx = comparator (a - b)
-;
-; r8 = length; // i
-; r9 = 0; // j
-; r10 = 0; // temp2
-; r12 = A
-; r13 = rdx; // Comparator
-; r11 = length
-; rax, rdi and rsi are also used as intermediates
-sort:
-          push r8
-          push r9
-          push r10
-          push r11
-          push r12
-          push r13
-          
-          mov r8, rsi ; // i
-          mov r12, rdi ; A
-          mov r13, rdx ; compar
+; Params:
+; rdi = start array
+; rsi = num elements
+; rdx = pointer function
 
-          ;xor r9, r9 ; j
-          xor r10, r10 ; temp2
+; Register Use:
 
-.outer:
-          ; Contiue if r8>1
-          cmp r8, 1
-          jle .end
+; non-volatile
+; r12 = start array
+; r13 = i
+; r14 = pointer function
+; r15 = j
 
-          ; Set r9 = 0
-          xor r9, r9
+; volatile
+; rcx = i-1
+; rdi = rsi = params compare function and temps
 
-.inner:
-          ; r10=i-1
-          mov r10, r8
-          dec r10
-          
-          ; Continue if r9 < 10
-          cmp r9, r10
-          jge .inner_end
+sort:		push r12	; stack misaligned
+		push r13	; stack aligned
+		push r14	; stack misaligned
+		push r15	; stack aligned
 
-           ; Call comparator
-           lea rdi, [r12+r9*8]
-           lea rsi, [r12+r9*8+8]
- 
-           push r8
-           push r9
-           push r10
-           push r11
-           call r13
-           pop r11
-           pop r10
-           pop r9
-           pop r8
-           
-           ; Swap condition: rax > 0
-           ; So no swap if rax <= 0
-           cmp rax, 0
-           jle .if_end
-          
-          ; Swap A[j] and A[j+1]
-          lea rdi, [r12+r9*8]
-          lea rsi, [r12+r9*8+8]
-          mov rax, [rdi]
-          mov r10, [rsi]
-          mov [rdi], r10
-          mov [rsi], rax
+		mov r12, rdi	; r12 = start array
+		mov r13, rsi	; r13 = num elem.
+		mov r14, rdx	; r14 = pointer function
 
-.if_end:
-          inc r9 ; j++
-          jmp .inner
+.outer:		cmp r13, 1	; i > 0 ?
+		jbe .end
 
-.inner_end:
-          dec r8 ; i--
-          jmp .outer
+		mov r15, 0	; j = 0
+		mov rcx, r13	; rcx = i
+		dec rcx		; rcx = i-1
 
-.end:
-          pop r13
-          pop r12
-          pop r11
-          pop r10
-          pop r9
-          pop r8
-          
-          ret
+.inner:		cmp r15, rcx	; j < i-1
+		jae .end_inner
 
+.if:		lea rdi, [r12 + r15*8]		; rdi = address of A[j]
+		lea rsi, [r12 + r15*8 + 8] 	; rsi = adress of A[j+1]
+		push rcx			; stack misaligned
+		call r14			; stack aligned
+		pop rcx				; stack aligned
+		cmp rax, 0
+		jle .end_if
 
+		mov rdi, [rdi]		; rdi = A[j]
+		mov rsi, [rsi]	; rsi = A[j+1]
+		mov [r12 + r15*8], rsi		; A[j] = A[j+1]
+		mov [r12 + r15*8+8], rdi	; A[j+1] = A[j]
 
+.end_if:	inc r15		; j++
+		jmp .inner
 
+.end_inner:	dec r13		; i--
+		jmp .outer
 
+.end:		pop r15
+		pop r14
+		pop r13
+		pop r12
 
-
-
-
-
-
-
-
-
-
-
-
-
+		ret
 
