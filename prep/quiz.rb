@@ -5,8 +5,7 @@ TABLES = [
   "Was sind die Schichten im TCP/IP Modell?" => "4. Application\n3. Transport\n2. Network\n1. Network",
   "Was sind die Schichten im OSI Modell? " => "7. Application\n6. Darstellung\n5. Session\n4. Transport\n3. Network\n2. Datalink\n1. Bitübertragung",
   "Was sind die Schichten im TCP/IP Modell?" => "4. Application\n3. Transport\n2. Network\n1. Network",
-  "Welche Protokolle liegen im 7.-5. Layer des OSI Modells / Layer 4. im TCP/IP?" =>
-"Layer 7: HTTP(S), FTTP, Telnet, NTP, DHCP, PING\nLayer 6: SSL\nLayer 5: Socket, Netbios",
+  "Welche Protokolle liegen im 7.-5. Layer des OSI Modells / Layer 4. im TCP/IP?" => "Layer 7: HTTP(S), FTTP, Telnet, NTP, DHCP, PING\nLayer 6: SSL\nLayer 5: Socket, Netbios",
   "Welche Protokolle liegen im 4. Layer des OSI Modells / Layer 3. im TCP/IP?" => "TCP, UDP",
   "Welche Protokolle liegen im 3. Layer des OSI Modells / Layer 2. im TCP/IP?" => "IP, Arp, ICMP, IGMP",
   "Welche Protokolle liegen im 2-1. Layer des OSI Modells / Layer 1. im TCP/IP?" => "Ethernet",
@@ -31,7 +30,11 @@ TABLES = [
   "Was ist der große Nachteil bei Polling?" => "- Wartet auf ein Event\n- Kann nebenbei nichts anderes tun\n- Dadurch höherer Stromverbrauch",
   "Ablauf eines Interrupts in Hard- und Software?" => "Hardware:\n1. I/O sended Signal an CPU\n2. Laufende Instruktion wird zuende bearbeitet\n3. CPU nimmt den Interrupt an und sendet ein Signal an das Gerät\n4. PSW und PC werden auf dem Stack gespeichert\n5. Register werden auf dem Stack gespeichert\n6. (Fortsetzung in Software)\nSoftware:\n1. Wichtige Register werden gespeichert\n2. ISR wird aufgerufen\n3. Registert werden wiederhergestellt\n- PSW und PC werden wieder hergestellt",
   "Warum ist es einfacher, im TCP/IP Modell auf Schicht 4 ein neues Protokoll einzuführen als auf Schicht 3?" => "Schicht 4 ist hauptsächlich software-basiert, Schicht 3 hardware-basiert.",
-  "Was sind die Unterschiede zwischen MAC-Adresse und IP-Adressen?" => "MAC-Adresse: Eindeutige ID und physikalische Adresse des Geräts im Rechnernetz.\nIP-Adresse:  Hierarchisch strukturierte, logische Adressen des Netzwerks."
+  "Was sind die Unterschiede zwischen MAC-Adresse und IP-Adressen?" => "MAC-Adresse: Eindeutige ID und physikalische Adresse des Geräts im Rechnernetz.\nIP-Adresse:  Hierarchisch strukturierte, logische Adressen des Netzwerks.",
+  "Was sind interne und externe Fragmentierung. Wie hilft Paging?" => "Interne Fragmentierung:\n- Block von Speicher nur als ganzes anwendbar (feste Partitionierung)\n- Wenn ein Bereich nicht mehr gebraucht wird, kann er nicht für andere Prozesse verwendet werden.\nExterne Fragmentierung:\n- Bei dynatischer Partitionierung\n- Wenn Blöcke allokiert und freigegeben werden, können Lücken entstehen, die zusammen groß genug für einen neuen Block sind, aber einzeln nicht.\nPaging hilft weil...\nDie MMU kann Adressen übersetzen und in kleinere Teile splitten (im persisten Speicher \"Frames\", in Prozessen \"Pages\").",
+  "Wann tritt Thrashing auf, was tut es?" => "- Tritt auf, wenn der RAM voll ausgelastet ist.\n- Daten können woanders abgelagert werden.\n- Ladezeiten werden länger.\nEs gibt Heap Threashing, Cache Thrashing und Process Thrashing.",
+  "Was ist die TLB, was unterscheidet sie von der Page Table?" => "- Genutzt von der MMU\n- Speichert die zuletzt genutzten Page Numbers damit Seiten schneller gefunden werden können.",
+   "" => ""
   # Fortsetzung folgt
 }.freeze,
   #__RA__
@@ -45,8 +48,8 @@ TABLES = [
  "Universeelle Programmierbarkeit nach von-Neumann?" => "Programmiersprachen Turing-Vollständig",
  "Maschienencode, Assemblersprache, Ein-Adress-Befehle, Mehr-Adress-Befehle?" => "- Maschinencode: Abfolge von Bytes, direkt von CPU ausführbar\n- Assemblersprache: Menschenlesbar und direkt in Maschinencode übersetzbar\n- Ein-Adress-Befehl: Eine Anweisung auf einen Wert (wie JMP)\n- Mehr-Adress-Befehl: Eine Anweisung mit mehreren Operanten (MOV, ADD, JLE, ...)",
  "Zwei-Phasen-Konzept der Befehlsverarbeitung nach von-Neumann?" => "1. Phase:\n- Liest Speicherzelle, auf die der Program-Counter (PC) zeigt, interpretiert als Befehl\n2. Phase:\n- Ausführung inklusive IF, ID, OF, EX und WB\n",
- "von-Neumann Flaschenhals?" => "- Daten laufen nur sequenziell über einen einzelnen Bus\n- CPU schneller als der Hauptspeicher => Leistung der CPU nicht voll genutzt.\n- Umgangen durch getrennte Caches für Befehle und Daten"
- 
+ "von-Neumann Flaschenhals?" => "- Daten laufen nur sequenziell über einen einzelnen Bus\n- CPU schneller als der Hauptspeicher => Leistung der CPU nicht voll genutzt.\n- Umgangen durch getrennte Caches für Befehle und Daten",
+ "Was sind Lazy-, Normal- und Eager Allocation?" => "Lazy: Speicher so spät wir möglich allokieren und nur wenn notwendig. (Startup scchneller, Speicherverbrauch niedriger und inkonsistent, Laufzeit schlechter)\nNormal: Memory beim Betreten eines bestimmten Punkts im Prozess allokieren.\nEager: Speicher beim Startup allokieren (Startup dauert länger, Speicherverbrauch ist höher aber konstant, dafür ist der Ablauf danach schneller)"
   # Fortsetzung folgt
 }.freeze,
 {"struct sockaddr" => "sa_family_t sa_family => One of AF_INET, AF_INET6, AF_UNIX, AF_APPLETALK, AF_PACKET, AF_X25, AF_NETLINK
