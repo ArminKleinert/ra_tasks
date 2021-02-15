@@ -1,3 +1,6 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
 TABLES = [
   #__BKS__
   {
@@ -49,7 +52,17 @@ TABLES = [
  "Maschienencode, Assemblersprache, Ein-Adress-Befehle, Mehr-Adress-Befehle?" => "- Maschinencode: Abfolge von Bytes, direkt von CPU ausführbar\n- Assemblersprache: Menschenlesbar und direkt in Maschinencode übersetzbar\n- Ein-Adress-Befehl: Eine Anweisung auf einen Wert (wie JMP)\n- Mehr-Adress-Befehl: Eine Anweisung mit mehreren Operanten (MOV, ADD, JLE, ...)",
  "Zwei-Phasen-Konzept der Befehlsverarbeitung nach von-Neumann?" => "1. Phase:\n- Liest Speicherzelle, auf die der Program-Counter (PC) zeigt, interpretiert als Befehl\n2. Phase:\n- Ausführung inklusive IF, ID, OF, EX und WB\n",
  "von-Neumann Flaschenhals?" => "- Daten laufen nur sequenziell über einen einzelnen Bus\n- CPU schneller als der Hauptspeicher => Leistung der CPU nicht voll genutzt.\n- Umgangen durch getrennte Caches für Befehle und Daten",
- "Was sind Lazy-, Normal- und Eager Allocation?" => "Lazy: Speicher so spät wir möglich allokieren und nur wenn notwendig. (Startup scchneller, Speicherverbrauch niedriger und inkonsistent, Laufzeit schlechter)\nNormal: Memory beim Betreten eines bestimmten Punkts im Prozess allokieren.\nEager: Speicher beim Startup allokieren (Startup dauert länger, Speicherverbrauch ist höher aber konstant, dafür ist der Ablauf danach schneller)"
+ "Was sind Lazy-, Normal- und Eager Allocation?" => "Lazy: Speicher so spät wir möglich allokieren und nur wenn notwendig. (Startup scchneller, Speicherverbrauch niedriger und inkonsistent, Laufzeit schlechter)\nNormal: Memory beim Betreten eines bestimmten Punkts im Prozess allokieren.\nEager: Speicher beim Startup allokieren (Startup dauert länger, Speicherverbrauch ist höher aber konstant, dafür ist der Ablauf danach schneller)",
+ "Scheduling: Was sind FCFS, SPN, RoundRobin, SRT und HRRN?" => "FCFS: Non-preemptive*; In-Order\nSPN:  Non-Preemptive; Kürzeste Prozesse zuerst;\nRoundRobin: Prozess wird für eine Zeit bearbeitet, dann unterbrochen und im nächsten Zyklus fortgesetzt; Preemptive\nSRT:  Zyklus-Bearbeitung; Prozesse pro Zyklus nach kürzester Zeit priorisiert; Bei Abschluss kann im selben Zyklus der nächste Prozess starten; Preemptive\nHRRN: Prozesse nach RespondRatio priorisiert ((Wartezeit+Gesamtzeit)/Gesamtzeit); Non-Preemptive\n\nPreemptive: Prozesse können unterbrochen werden\nNon-Preemptive: Prozesse werden immer voll abgearbeitet, bevor der nächste starten kann",
+ "Memory: First-Fit, Rotating-First-Fit, Best-Fit" => "First-Fit: Belege ersten ausreichend großen Block, starte dann von vorn\nRotating-First-Fit: Wie First-Fit aber startet für nächste Allokation von der gemerkten Position\nBest-Fit: Belege kleinsten passenden Bereich",
+ "Was ist DMA (Direct Memory Access) für Geräte und CPU?" => "Gesteuert über extra Hardware: DMA Modul\n- DMA erlaubt direkten Zugriff auf den flüchtigen Speicher für Geräte.\n- DMA Modul erhält Erlaubnis von CPU und sendet dann Interrupt nach Fertigstellung.",
+ "Wie funktioniert I/O Buffering?" => "Bereich im Main Memory wird als Puffer reserviert.\n
+ - Sehr schnell\n- Kann nicht auf persistenten Speicher verschoben werden.\n- Zugriff muss für ext. Hardware und Driver möglich sein\n- Übertragung kann Blockweise oder als Stream geschehen\n\nAnzahl Buffer: 0, 1, 2 (einer für In-, einer für Output) oder als Ring",
+ "Was ist RAID und welche Varianten gibt es?" => "System zur Datensicherung durch die Nutzung mehrerer Festplatten.\nLevel 0: Daten in Blöcke aufgeteilt und auf 2 Platten verteilt.\n- Keine Redundanz\n- Erhöhte Zugriffsgeschwindigkeit\nLevel 1: Inhalte komplett kopiert\n- Einfache Umsetzung\nLevel 2: Daten in Bitfolgen aufgeteilt, auf größere Blöcke abgebildet und dann auf 2+ Platten verteilt.\n- Sehr schnell\nLevel 3: Extra 'Parity'-Laufwerk für Sicherung (Jedes Bit entspricht XOR-Verknüpfung der Bits der anderen Festplatten).\n- Wenig Redundanz\n- Gut für lange, sequenzielle Transfers\nLevel 4: Ähnlich zu 3, aber mit größeren Blöcken statt einzelnen Bytes\n- Vorteile wie bei Level 3\nLevel 5: Ähnlich zu 4, Aber Parity wird ebenfalls kopiert (Auf derselben Platte)\n- Gut für kleine Schreibzugriffe\nLevel 6: Wie 5, aber Parität ist immer auf 2 Platten vorhanden\n- Zusätzliche Sicherung",
+ "Wo weden Dateinamen gespeichert?" => "Als Teil der Metadaten.",
+ "Was ist ein Pseudo-Dateisystem?" => "Virtuelles Dateisystem. Erlaubt Zugriff wie ein normales Dateisystem.",
+ "Was ist eine Inode?" => "- Enthält Metadaten der Datei inklusive Pointer auf die eigentlichen Daten.\n- Genutzt vom OS zum richtigen Erkennen von Daten und Dateityp.",
+ "Contiguous allocation, Chained allocation, Indexed Allocation?" => "Varianten von Allokation für Files.\nContiguous: Datei bekommt einen großen Block an Speicher\nChained: Datei kann aus mehreren Blöcken bestehen (jeder mit Pointer zum nächsten)\nIndexed: Wie Chained, aber im Header gibt es eine Tabelle mit Indizes für schnelleren Zugriff"
   # Fortsetzung folgt
 }.freeze,
 {"struct sockaddr" => "sa_family_t sa_family => One of AF_INET, AF_INET6, AF_UNIX, AF_APPLETALK, AF_PACKET, AF_X25, AF_NETLINK
