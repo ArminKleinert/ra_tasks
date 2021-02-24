@@ -64,7 +64,13 @@ TABLES = [
  "Was sind die Unterschiede zwischen Intranet, Internet und WWW?" => "Intranet lokale Vernetzung von Computer.\nInternet: Vernetzung von weltweiten Rechnernetzwerken, die öffentlich zugänglich ist.\nWWW: Sammlung von Websites; verknüpft durch Hyperlinks; basierend auf dem Internet; Kommunikation über HTTP und HTTPS",
  "Was ist der Nachteil des ISO/OSI Modells zumm TCP/IP Modell?" => "Das OSI Modell hat mehr Schichten, jede mit Overhead. Außerdem wird es ist nicht in der Realität genutzt...",
  "Was sind die Unterschiede zwischen IPv4 und IPv6?" => "IPv4\n- Alt\n- 32 Bit Adressen\n- Lokale Adressen notwendig\nIPv6\n- 128 Bit Adressen (Also 10^38 IP-Adressen)\n- Jedes Gerät hat eine eigene Adresse\n- Noch nicht überall unterstützt",
- "read/write vs recv/send" => "- Alle funktionieren über Sockets und Files\n- "
+ "read/write vs recv/send" => "- Alle funktionieren über Sockets und Files\n- ",
+ "Warum ergibt sich bei der Harvard Architektur eine Leistungssteigerung?" => "Datenspeicher und Befehlsspeicher sind getrennt und haben getrennte Busse.", 
+ "Erkläre Einerkomplement, Zweierkomplement, Betrag+Vorzeichen und Charakteristik." => "- 1-K: Bei negativen Zahlen sind alle Bits gekippt. Es gibt zwei Darstellungen für die 0.\n- 2-K: Bei negativen Zahlen werden alle Bits gekippt und dann wird eine 1 addiert. Es gibt nur eine Darstellung für die 0.\n- B+V: Das MSB wird für das Vorzeichen genutzt (1=Negativ), die anderen 7 Bits sind normal. Es gibt zwei Darstellungen für die 0.\n- Charakteristik:  ", 
+ "Wie kann eine Pipeline im Fall von Data-Hazards schneller gemacht werden?" => "- Forwarding (EX -> EX)\n- Forwarding (MEM -> EX)\n- Bubbles \n- Reordering",
+ "Was ist der Unterschied zwischen zeitlicher und örtlicher Lokalität?" => "- Zeitlich: Zuletzt benutzte Daten\n- Örtlich: Daten, die nahe beieinander stehen, wie Bytes in Arrays.",
+ "Unterschied zwischen Cache-Kohärenz und -Konsistenz" => "- Kohärenz: Caches können unterschiedliche Daten beinhalten, aber die korrekte Funktionsweise wird durcch Protokolle gewährleistet.\n- Konsistenz: Caches in verschiedenen Prozessoren auf demselben Stand.",
+ "Was sind die 3 Cache Kohärenz-Protokolle? (Kurze Erklärung zu jedem)" => "Write-Update\n- Kopien aller Caches sind konsistent (und damit auch kohärent)\n- Write-Invalidate\n- Bei Veränderung werden alle Kopien in anderen Caches als Invalid markiert.\nMESI-Protokoll\n- 4 Zustände: Modified, Exclusive unmodified, Shared unmodified, Invalid"
   # Fortsetzung folgt
 },
 {"struct sockaddr" => "sa_family_t sa_family => One of AF_INET, AF_INET6, AF_UNIX, AF_APPLETALK, AF_PACKET, AF_X25, AF_NETLINK
