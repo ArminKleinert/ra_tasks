@@ -1,0 +1,42 @@
+MESI-Protokoll
+
+
+- Stichpunkte erlaubt?
+- Dezimal zu Floating Point per Hand umschreiben?
+
+Zahlensysteme:
+- Hornerschema
+- Euklidischer Algorithmus
+
+Dezimal zu FP per Hand
+FP Addition
+
+Cache
+- Cache Assoziativität erkennen.
+  - Voll Assoziativ
+  - Direct Map
+  - N-Assoziativ
+- Dirty Bit
+- Valid Bit
+
+Geben Sie an, wie viele Bits der 8-Bit-Adressen auf Tag, Index und Byte-Anwahl entfallen.
+Tag: 4 bits (0-F, also 4 bit)
+Index: 2 bits (statisch 2)
+Set: 2 bits (Abhängig von Anzahl der Sets)
+
+Prediction:
+Gut: Ein cond. jump am Ende
+Schlecht: Ein cond. jump am Anfang, ein uncond. am Ende
+
+MESI-Protokoll Zustand Shared Modified nicht erlaubt weil:
+Weil es sonst verschiede Versionen eines Wertes zur selben Zeit geben könnte.
+
+
+[BKS] Priority Inversion???
+
+
+
+----------
+"Weiß nicht Weiter" - Fragen
+
+Erklären Sie in einem Satz, wie die Adressumsetzung von virtueller nach realer Speicheradresse be-schleunigt werden kann.
